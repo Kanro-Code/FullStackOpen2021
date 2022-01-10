@@ -6,42 +6,24 @@ const App = () => {
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
   
-  const Feedback = () => {
-    return (
-      <div>
-        <Header text="give feedback" />
-        <Button text="good" handler={() => setGood(good + 1)} />
-        <Button text="neutral" handler={() => setNeutral(neutral + 1)} />
-        <Button text="bad" handler={() => setBad(bad + 1)} />
-      </div>
-    )
-  }
-  
-  const Statistics = () => {
-    return (
-      <div>
-        <Header text="statistics" />
-        <p>good {good}</p>
-        <p>neutral {neutral}</p>
-        <p>bad {bad}</p>
-      </div>
-    )
-  }
-  
-  const Button = ({text, handler}) => (
-    <button onClick={handler}>
-      {text}
-    </button>
-  )
-  
-  const Header = ({text}) => (<h1>{text}</h1>)
-  
   return (
     <div>
-      <Feedback />
-      <Statistics />
+      <h1>feedback</h1>
+        <button onClick={()=>(setGood(good + 1))}>good</button>
+        <button onClick={()=>(setNeutral(neutral + 1))}>neutral</button>
+        <button onClick={()=>(setBad(bad + 1))}>bad</button>
+      <h1>statistics</h1>
+
     </div>
   )
 }
+
+const Statistics = () => (
+  good {good}<br />
+  neutral {neutral}<br />
+  bad {bad}<br />
+  average {(good - bad) / (good + neutral + bad)}<br />
+  positive {good/(good + neutral + bad)*100}%<br />
+)
 
 export default App
