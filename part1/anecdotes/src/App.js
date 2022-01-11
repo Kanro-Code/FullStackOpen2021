@@ -10,40 +10,50 @@ const App = () => {
     'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.',
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients',
   ]
-  
-  const points = [];
-  for (let i = 0; i < anecdotes.length; i++) 
-    points[i] = 0
 
   const [selected, setSelected] = useState(0);
-  const [votes, setVotes] = useState(points[selected])
+  const [votes, setVotes] = useState(new Array(anecdotes.length).fill(0))
+  const [highest, setHighest] = useState(0)
 
+  const addToVote = () => {
+    const newVotes = [...votes]
+    newVotes[selected] += 1
+    setVotes(newVotes)
+    if (newVotes[selected] > highest) 
+      setHighest(newVotes[selected])
+  }
+
+  const randomNewNumber = () => {
+    let roll = (Math.random() * (anecdotes.length-1)).toFixed(0)
+    return (selected !== roll) ? roll : randomNewNumber()
+  }
+
+  const randomAnecdote = () => {
+    setSelected(randomNewNumber())
+  }
+  console.log(votes)
   return (
     <div>
-      <p>{anecdotes[selected]}</p>
-      <p>has {votes}</p>
-      <VoteButton selected={selected} points={points} setVotes={setVotes} votes={votes} />
-      <RandomButton selected={selected} setter={setSelected} max={anecdotes.length-1} />
+      <h1>Anecdote of the day</h1>
+      <Anecdote anecdote={anecdotes[selected]} votes={votes[selected]} />
+      <button onClick={() => addToVote()}>vote</button>
+      <button onClick={()=>randomAnecdote()}>next anecdote</button>
+
+      { (highest > 0 ) && 
+        <div>
+          <h1>Anecdote with most votes</h1>
+          <Anecdote anecdote={anecdotes[votes.indexOf(highest)]} votes={highest} /> 
+        </div>
+        }
     </div>
   )
 }
 
-const getNewRandom = (prev, max) => {
-  let roll = (Math.random() * max).toFixed(0)
-  return (prev !== roll) ? roll : getNewRandom(prev, max)
-}
-
-const RandomButton = ({selected, setter, max}) => (
-  <button onClick={() => (setter(getNewRandom(selected, max)))}>next anecdote</button>
-)
-
-const VoteButton = ({selected, points, setVotes, votes}) => (
-  <button onClick={() => {
-    points = [...points]
-    points[selected] += 1
-    votes = points[selected]
-    setVotes(votes)
-  }}>vote</button>
+const Anecdote = ({anecdote, votes}) => (
+  <div>
+    <p>{anecdote}</p>
+    <p>has {votes} votes</p>
+  </div>
 )
 
 export default App
