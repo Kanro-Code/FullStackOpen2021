@@ -19,20 +19,41 @@ const App = () => {
 		return true
 	}
 
+	const filterPerson = (ps) => (
+		ps.filter((p => p.name.includes(filter)))
+	)
+
   return (
     <div>
 			<h2>Phonebook</h2>
-			<Filter />
+			<Filter 
+				filter={filter} 
+				setFilter={setFilter} 
+			/>
+
 			<h2>add a new</h2>
-			<Phonebook addPerson={addPerson} />
+			<Phonebook 
+				addPerson={addPerson} 
+				/>
+
 			<h2>Numbers</h2>
-      <Numbers persons={}/>
+      <Numbers 
+				persons={filterPerson(persons)}
+			/>
     </div>
   )
 }
 
-const Filter = () => {
-
+const Filter = ({filter, setFilter}) => {
+	const handleFilterChange = (e) => setFilter(e.target.value)
+	return (
+		<div>
+			<input 
+				value={filter} 
+				onChange={handleFilterChange} 
+			/>
+		</div>
+	)
 }
 
 const Phonebook = ({addPerson}) => {
@@ -91,7 +112,9 @@ const Numbers = ({persons}) => (
 const NumbersList = ({persons}) => (
 	<ul>
 		{persons.map((person) =>
-			<NumbersListItem key={person.id} person={person} />
+			<NumbersListItem 
+				key={person.id} 
+				person={person} />
 		)}
 	</ul>
 )
