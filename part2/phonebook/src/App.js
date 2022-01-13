@@ -8,7 +8,7 @@ const App = () => {
     { name: 'Dan Abramov', number: '12-43-234345', id: nanoid() },
     { name: 'Mary Poppendieck', number: '39-23-6423122', id: nanoid() }
   ])
-	
+	const [filter, setFilter] = useState('')
 
 	const addPerson = (person) => {
 		for (let i = 0; i < persons.length; i++) {
@@ -21,10 +21,18 @@ const App = () => {
 
   return (
     <div>
+			<h2>Phonebook</h2>
+			<Filter />
+			<h2>add a new</h2>
 			<Phonebook addPerson={addPerson} />
-      <Numbers persons={persons}/>
+			<h2>Numbers</h2>
+      <Numbers persons={}/>
     </div>
   )
+}
+
+const Filter = () => {
+
 }
 
 const Phonebook = ({addPerson}) => {
@@ -52,7 +60,6 @@ const Phonebook = ({addPerson}) => {
 
 	return (
 		<div>
-			<h2>Phonebook</h2>
 			<form onSubmit={submitPerson}>
 				<div>
 					name: <input 
@@ -74,7 +81,6 @@ const Phonebook = ({addPerson}) => {
 
 const Numbers = ({persons}) => (
 	<div>
-		<h2>Numbers</h2>
 		{persons.length
 			? <NumbersList persons={persons}/>
 			: <div>...</div>
