@@ -1,13 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { nanoid } from 'nanoid'
+import axios from 'axios'
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: nanoid() },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: nanoid() },
-    { name: 'Dan Abramov', number: '12-43-234345', id: nanoid() },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: nanoid() }
-  ])
+  const [persons, setPersons] = useState([])
 	const [filter, setFilter] = useState('')
 
 	const addPerson = (person) => {
@@ -22,6 +18,16 @@ const App = () => {
 	const filterPerson = (ps) => (
 		ps.filter((p => p.name.includes(filter)))
 	)
+
+	useEffect(() => {
+		console.log('Fetching persons')
+		axios
+			.get('http://localhost:3030/persons')
+			.then(res => {
+				console.log('Fetching persons DONE')
+				setPersons(res.data)
+			})
+	}, [])
 
   return (
     <div>
