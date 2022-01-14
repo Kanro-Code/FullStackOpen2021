@@ -49,49 +49,42 @@ const Countries = ({countries}) => {
     )
   }
 }
-const CountriesList = ({countries}) => {
-  console.log("Countrieslist", countries)
-  return (
-    <ul>
-      {countries.map(country => (
-        <CountryItem 
-          key={country.cca2} 
-          country={country} 
-        />
-      ))}
-    </ul>
-  )
-}
+const CountriesList = ({countries}) => (
+  <ul>
+    {countries.map(country => (
+      <CountryItem 
+        key={country.cca2} 
+        country={country} 
+      />
+    ))}
+  </ul>
+)
 
-const CountryItem = ({country}) => {
-  console.log("CountriesItem", country)
-  return (
-    <li>{country.name.common}</li>
-  )
-}
 
-const CountryDetailed = ({country}) => {
-  console.log("CountryDetailed", country)
-  return (
-    <div>
-      <h1>{country.name.common}</h1>
-      <p>
-        capital {country.capital[0]} <br />
-        population {country.population}
-      </p>
-      <h3>languages</h3>
-      <CountryLanguages languages={country.languages} />
-      <img src={country.flags.png} alt={`Flag of ${country.name.common}`} />
-    </div>
-  )
-}
+const CountryItem = ({country}) => (
+  <li>{country.name.common}</li>
+)
+
+const CountryDetailed = ({country}) => (
+  <div>
+    <h1>{country.name.common}</h1>
+    <p>
+      capital {country.capital[0]} <br />
+      population {country.population}
+    </p>
+    <h3>languages</h3>
+    <CountryLanguages languages={country.languages} />
+    <img src={country.flags.png} alt={`Flag of ${country.name.common}`} />
+  </div>
+)
+
 
 const CountryLanguages = ({languages}) => (
   <ul>
-  {Object.entries(languages).map(([key, language]) => (
-    <li key={key}>{language}</li>
-  ))}
-</ul>
+    {Object.entries(languages).map(([key, language]) => (
+      <li key={key}>{language}</li>
+    ))}
+  </ul>
 )
 
 export default App;
