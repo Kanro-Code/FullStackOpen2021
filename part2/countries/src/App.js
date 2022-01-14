@@ -116,7 +116,19 @@ const Weather = ({country}) => {
   useEffect(() => {
     axios
       .get(weatherAPI())
-      .then(res => setWeather(res.data))
+      .then(res => {
+        console.log(res.data)
+        const {name, main, weather, wind} = res.data
+        const {deg, speed} = wind
+        const {icon} = weather[0]
+        const temp
+
+        setWeather({
+          name,
+          deg,
+          speed
+        })
+      })
   },[])
 
 
@@ -126,8 +138,7 @@ const Weather = ({country}) => {
 }
 
 const WeatherDetails = ({weather}) => {
-  const {name, main, wind} = weather
-  const {speed, deg} = wind
+  console.log(weather)
 
   const degreeToCompass = (d) => {
     if (d >= 0 && d <= 11.25) { return "N" }
@@ -151,13 +162,13 @@ const WeatherDetails = ({weather}) => {
 
   return (
     <div>
-      <h3>Weather in {name}</h3>
+      <h3>Weather in {weather.name}</h3>
       <img 
         src={`http://openweathermap.org/img/wn/`+
           `${weather.weather[0].icon}@2x.png`} 
         alt="weather" /><br />
-      <b>temperature:</b> {(main.temp-272.15).toFixed(0)}°C <br />
-      <b>wind:</b> {(speed*3.6).toFixed(0)}km/h {degreeToCompass(deg)}
+      <b>temperature:</b> {(weather.main.temp-272.15).toFixed(0)}°C <br />
+      <b>wind:</b> {(weather.speed*3.6).toFixed(0)}km/h {degreeToCompass(weather.deg)}
     </div>
   )
 }
