@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { nanoid } from 'nanoid'
 import axios from 'axios'
+import Persons from './services/Persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -21,12 +22,8 @@ const App = () => {
 
 	useEffect(() => {
 		console.log('Fetching persons')
-		axios
-			.get('http://localhost:3030/persons')
-			.then(res => {
-				console.log('Fetching persons DONE')
-				setPersons(res.data)
-			})
+		Persons.getAll()
+			.then(res => setPersons(res))
 	}, [])
 
   return (
