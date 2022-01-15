@@ -53,6 +53,7 @@ const Countries = ({countries, setFilter}) => {
     )
   }
 }
+
 const CountriesList = ({countries, setFilter}) => {
   return (
     <ul>
@@ -67,7 +68,6 @@ const CountriesList = ({countries, setFilter}) => {
   )
 }
 
-
 const CountryItem = ({country, setFilter}) => {
   const handleClick = () => setFilter(country.name.common)
 
@@ -81,7 +81,6 @@ const CountryItem = ({country, setFilter}) => {
 
 const CountryDetailed = ({country}) => {
   const {name, capital, population, languages} = country
-  console.log(country)
   return (
     <div>
       <h1>{name.common}</h1>
@@ -135,14 +134,16 @@ const Weather = ({country}) => {
       .get(`https://api.openweathermap.org/data/2.5/weather` +
         `?q=${capital},${cca2}&appid=${API_KEY_OPENWEATHER}`)
       .then(res => {
-        const {name, main, weather, wind} = res.data
+        const {name} = res.data
+        const heading = degreeToCompass(res.data.wind.deg)
+        const temperature = (res.data.main.temp - 272.15).toFixed(1)
+        const wind = (res.data.wind.speed * 3.6).toFixed(1)
+        const icon = `http://openweathermap.org/img/wn/` +
+          `${res.data.weather[0].icon}@2x.png`
+        
+
         setWeather({
-          name: name,
-          temperature: (main.temp - 272.15).toFixed(1),
-          wind: (wind.speed * 3.6).toFixed(1),
-          wind_heading: degreeToCompass(wind.deg),
-          icon: `http://openweathermap.org/img/wn/`+
-            `${weather[0].icon}@2x.png`,
+          name, temperature, wind, heading, icon
         })
       })
   },[])
