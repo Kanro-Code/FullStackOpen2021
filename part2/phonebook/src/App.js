@@ -1,128 +1,72 @@
-import React, { useState, useEffect } from 'react'
-import { nanoid } from 'nanoid'
-import axios from 'axios'
-import Persons from './services/Persons'
+import React, {useState, useEffect} from 'react'
+import Numbers from './services/Numbers'
 
 const App = () => {
-  const [persons, setPersons] = useState([])
+	const [numbers, setNumbers] = useState([])
 	const [filter, setFilter] = useState('')
 
-	const addPerson = (person) => {
-		for (let i = 0; i < persons.length; i++) {
-			if (persons[i].name === person.name) 
-				return false;
-		}
-		setPersons([...persons, person])
-		return true
-	}
-
-	const filterPerson = (ps) => (
-		ps.filter((p => p.name.includes(filter)))
+	useEffect(() => 
+		Numbers.getAll()
+			.then(res => setNumbers(res))
 	)
 
-	useEffect(() => {
-		console.log('Fetching persons')
-		Persons.getAll()
-			.then(res => setPersons(res))
-	}, [])
-
-  return (
-    <div>
+	return (
+		<div>
 			<h2>Phonebook</h2>
-			<Filter 
-				filter={filter} 
-				setFilter={setFilter} 
-			/>
-
-			<h2>add a new</h2>
-			<Phonebook 
-				addPerson={addPerson} 
-				/>
-
-			<h2>Numbers</h2>
-      <Numbers 
-				persons={filterPerson(persons)}
-			/>
-    </div>
-  )
+			<Filter filter={filter} setFilter={setFilter} />
+			<NumberAdd numbers={numbers} setNumbers={setNumbers} />
+			<NumberList numbers={numbers} />
+		</div>
+	)
 }
 
 const Filter = ({filter, setFilter}) => {
-	const handleFilterChange = (e) => setFilter(e.target.value)
+	const handleChange = (e) => setFilter(e.target.value)
 	return (
-		<div>
-			<input 
-				value={filter} 
-				onChange={handleFilterChange} 
-			/>
-		</div>
+		<input value={filter} onChange={handleChange} />
 	)
 }
 
-const Phonebook = ({addPerson}) => {
-	const [newName, setNewName] = useState('')
-	const [newNumber, setNewNumber] = useState('')
+const NumberAdd = ({numbers, setNumbers}) => {
+	const [name, setName] = useState('')
+	const [number, setNumber] = useState('')
 
-	const handleNameChange = (e) => setNewName(e.target.value)
-	const handleNumberChange = (e) => setNewNumber(e.target.value)
-	
-	const submitPerson = (e) => {
+	const handleName = (e) => setName(e.target.value)
+	const handleNumber = (e) => setNumber(e.target.value)
+	const handleSubmit = (e) => {
 		e.preventDefault()
-		let res = addPerson({
-			name: newName,
-			number: newNumber,
-			id: nanoid()
-		})
-
-		if (res) {
-			setNewName('')
-			setNewNumber('')
-		} else {
-			window.alert(`${newName} is already added to the phonebook`)
-		}
+		
+		(numbers.filter(p => p.name == name))
+			? alert(`${name} is already added to the phonebook`)
+			: Numbers.create({name, number})
+				.then(() => {
+					setName('')
+					setNumber('')
+				})
 	}
 
 	return (
-		<div>
-			<form onSubmit={submitPerson}>
-				<div>
-					name: <input 
-						value={newName} 
-						onChange={handleNameChange} 
-					/> <br />
-					number: <input
-						value={newNumber}
-						onChange={handleNumberChange}
-					/> <br />
-				</div>
-				<div>
-					<button type="submit">add</button>
-				</div>
-			</form>
-		</div>
+		<form onSubmit={handleSubmit}>
+			<h2>Add a new</h2>
+			name: <input value={name} onChange={handleName} /> <br />
+			number: <input value={number} onChange={handleNumber} /> <br />
+			<button type="submit">add</button>
+		</form>
 	)
 }
 
-const Numbers = ({persons}) => (
+const NumberList = ({numbers}) => (
 	<div>
-		{persons.length
-			? <NumbersList persons={persons}/>
-			: <div>...</div>
-		}
+		<h2>Numbers</h2>
+		<ul>
+			{numbers.map(p => 
+				<NumberListItem key={p.id} person={p} />
+			)}
+		</ul>
 	</div>
 )
 
-const NumbersList = ({persons}) => (
-	<ul>
-		{persons.map((person) =>
-			<NumbersListItem 
-				key={person.id} 
-				person={person} />
-		)}
-	</ul>
-)
-
-const NumbersListItem = ({person}) => (
+const NumberListItem = ({person}) => (
 	<li>{person.name} {person.number}</li>
 )
 
