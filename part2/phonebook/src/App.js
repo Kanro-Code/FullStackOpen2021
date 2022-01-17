@@ -20,7 +20,7 @@ const App = () => {
 			<h2>Phonebook</h2>
 			<Filter filter={filter} setFilter={setFilter} />
 			<NumberAdd numbers={numbers} setNumbers={setNumbers} />
-			<NumberList numbers={numbersFilter()} />
+			<NumberList numbers={numbersFilter()} setNumbers={setNumbers} />
 		</div>
 	)
 }
@@ -40,11 +40,10 @@ const NumberAdd = ({numbers, setNumbers}) => {
 	const handleNumber = (e) => setNumber(e.target.value)
 	const handleSubmit = (e) => {
 		e.preventDefault()
-		console.log('Adding person', e.target)
+		const existing = numbers.find(n => n.name === name)
 
-		console.log(numbers.filter(p => p.name === name))
-		if (numbers.filter(p => p.name === name).length) {
-			alert(`${name} is already added to the phonebook`)
+		if (existing) {
+			updateExisting({...existing, number: number})
 		} else {
 			Numbers
 				.create({name, number})
@@ -54,6 +53,18 @@ const NumberAdd = ({numbers, setNumbers}) => {
 					setNumber('')
 				})
 		}
+	}
+
+	const updateExisting = (person) => {
+		const message = `${person.name} is already added to the phonebook, `+
+		`replace the older number with a new one?`
+		if (window.confirm(message)) {
+			Numbers
+				.update(person.id, person)
+				.then(res => {
+					console.log(res)
+				})
+		 }
 	}
 
 	return (
@@ -66,19 +77,38 @@ const NumberAdd = ({numbers, setNumbers}) => {
 	)
 }
 
-const NumberList = ({numbers}) => (
-	<div>
-		<h2>Numbers</h2>
-		<ul>
-			{numbers.map(p => 
-				<NumberListItem key={p.id} person={p} />
-			)}
-		</ul>
-	</div>
+const NumberList = ({numbers, setNumbers}) => {
+	const handleDelete = ({name, id}) => {
+		if (!window.confirm(`Delete ${name} ?`)) return
+		Numbers
+			.deleteId(id)
+			.then(() => {
+				setNumbers(numbers.filter(n => n.id !== id))
+			})
+			.catch(err => {
+				alert ( `the number ${name},${id} was not deleted`)
+				console.log('deleting number', err)
+			})
+	}
+
+	return (
+		<div>
+			<h2>Numbers</h2>
+			<ul>
+				{numbers.map(p => 
+					<NumberListItem key={p.id} number={p} action={handleDelete}/>
+				)}
+			</ul>
+		</div>
+	)
+}
+
+const NumberListItem = ({number, action}) => (
+	<li>
+		{number.name} - {number.number}
+		<button onClick={() => action(number)}>delete</button>
+	</li>
 )
 
-const NumberListItem = ({person}) => (
-	<li>{person.name} {person.number}</li>
-)
 
 export default App
