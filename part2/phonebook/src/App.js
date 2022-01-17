@@ -44,6 +44,11 @@ const NumberAdd = ({numbers, setNumbers}) => {
 
 		if (existing) {
 			updateExisting({...existing, number: number})
+				.then(res =>  {
+					setNumbers(numbers.map(n => n.id !== res.id ? n : res ))
+					setName('')
+					setNumber('')
+				})
 		} else {
 			Numbers
 				.create({name, number})
@@ -59,12 +64,9 @@ const NumberAdd = ({numbers, setNumbers}) => {
 		const message = `${person.name} is already added to the phonebook, `+
 		`replace the older number with a new one?`
 		if (window.confirm(message)) {
-			Numbers
+			return Numbers
 				.update(person.id, person)
-				.then(res => {
-					console.log(res)
-				})
-		 }
+		}
 	}
 
 	return (
@@ -109,6 +111,5 @@ const NumberListItem = ({number, action}) => (
 		<button onClick={() => action(number)}>delete</button>
 	</li>
 )
-
 
 export default App
