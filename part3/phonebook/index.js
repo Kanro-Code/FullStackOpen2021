@@ -1,8 +1,14 @@
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
+morgan.token('data', (req) => 
+  (req.method === "POST")
+    ? JSON.stringify(req.body)
+    : ''
+)
+
 app.use(express.json())
-app.use(morgan('tiny'))
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data'))
 
 const PORT = 3001
 
@@ -34,7 +40,7 @@ const generateId = () => {
 }
 
 app.get('/', (request, response) => {
-  resonse.send('<h1>Hello world!</h1>')
+  response.send('<h1>Hello world!</h1>')
 })
 
 app.get('/info', (request, response) => {
