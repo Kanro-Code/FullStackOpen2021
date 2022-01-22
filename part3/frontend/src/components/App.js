@@ -70,7 +70,7 @@ const App = () => {
 
 	return (
 		<div>
-			<h2>Phonebook</h2>
+			<h2>Phonebook Heroku Edition</h2>
 			<Notifications notification={notification} />
 			<Filter setFilter={setFilter} />
 			<NumberAdd handleAdd={handleAdd} />
