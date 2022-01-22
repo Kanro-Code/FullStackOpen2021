@@ -44,10 +44,9 @@ app.get('/', (request, response) => {
 })
 
 app.get('/info', (request, response) => {
-  let info = `Phonebook has info for ${persons.length} people <br>` 
-  info += new Date()
-
-  response.send(info)
+  response.send(
+    `Phonebook has info for ${persons.length} people <br> ${new Date()}`
+  )
 })
 
 app.get('/api/persons', (request, response) => {
@@ -58,25 +57,19 @@ app.post('/api/persons', (request, response) => {
   const { name, number } = request.body
 
   if (!name) {
-    return response.status(400).json({
-      error: 'name is empty'
-    })
+    return EmptyValueError(response, 'person.name')
   } else if (!number) {
-    return response.status(400).json({
-      error: 'number is empty'
-    })
+    return EmptyValueError(response, 'person.number')
   }
 
   const uniqueName = persons.filter(p => p.name === name)
-  const uniqueNumber = persons.filter(p => p.number === number)
   if (uniqueName.length) {
-    return response.status(400).json({
-      error: 'name must be unique'
-    })
-  } else if (uniqueNumber.length) {
-    return response.status(400).json({
-      error: 'number must be unique'
-    })
+    return UniqueValueError(response, 'peron.name')
+  }
+
+  const uniqueNumber = persons.filter(p => p.number === number)
+  if (uniqueNumber.length) {
+    return UniqueValueError(response, 'person.number')
   }
 
   const person = {
@@ -89,6 +82,18 @@ app.post('/api/persons', (request, response) => {
   console.log(person)
   response.json(person)
 })
+
+const UniqueValueError = (response, message) => {
+  ValueError(response, `Must be unique: ${message}`)
+}
+
+const EmptyValueError = (response, message) => {
+  ValueError(response, `EmptyValue: ${message}`)
+}
+
+const ValueError = (response, message) => {
+  return response.status(400).json(message)
+}
 
 app.get('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id)
