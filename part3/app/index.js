@@ -1,7 +1,9 @@
+require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
-const morgan = require('morgan')
+const Person = require('./models/person')
 
+const morgan = require('morgan')
 morgan.token('data', (req) => 
   (req.method === "POST")
     ? JSON.stringify(req.body)
@@ -16,71 +18,58 @@ app.use(express.static('build'))
 
 const PORT = process.env.PORT || 3001
 
-let persons = [
-  { 
-    "id": 1,
-    "name": "Arto Hellas", 
-    "number": "040-123456"
-  },
-  { 
-    "id": 2,
-    "name": "Ada Lovelace", 
-    "number": "39-44-5323523"
-  },
-  { 
-    "id": 3,
-    "name": "Dan Abramov", 
-    "number": "12-43-234345"
-  },
-  { 
-    "id": 4,
-    "name": "Mary Poppendieck", 
-    "number": "39-23-6423122"
-  }
-]
-
 const generateId = () => {
   return Math.floor((Math.random()*100000))
 }
 
 app.get('/info', (request, response) => {
-  response.send(
-    `Phonebook has info for ${persons.length} people <br> ${new Date()}`
-  )
+  Person
+    .find({})
+    .then(persons => {
+      response.send(
+        `Phonebook has info for ${persons.length} people <br> ${new Date()}`
+      )
+    })
 })
 
 app.get('/api/person', (request, response) => {
-  response.json(persons)
+  Person
+    .find({})
+    .then(persons => response.json(persons))
 })
 
 app.post('/api/person', (request, response) => {
-  const { name, number } = request.body
+  const {name, number} = request.body
+  
+  if (name === undefined || number === undefined) 
+    return EmptyValueError(response, 'name or body')
+  
+  const person = new Person({name,number})
+  person
+    .save()
+    .then(p => response.json(p))
+})
 
-  if (!name) {
-    return EmptyValueError(response, 'person.name')
-  } else if (!number) {
-    return EmptyValueError(response, 'person.number')
-  }
+app.get('/api/person/:id', (request, response) => {
+  const id = request.params.id
+  Person
+    .findById(id)
+    .then(person => response.json(person))
+    .catch(err => {
+      console.log(err)
+      response.status(400).send({ error: 'malformatted id' })
+    })
+})
 
-  const uniqueName = persons.filter(p => p.name === name)
-  if (uniqueName.length) {
-    return UniqueValueError(response, 'peron.name')
-  }
+app.delete('/api/person/:id', (request, response) => {
+  const id = request.params.id
+  persons = persons.filter(p => p.id !== id)
 
-  const uniqueNumber = persons.filter(p => p.number === number)
-  if (uniqueNumber.length) {
-    return UniqueValueError(response, 'person.number')
-  }
+  response.status(204).end()
+})
 
-  const person = {
-    id: generateId(),
-    name, 
-    number
-  }
-
-  persons = persons.concat(person)
-  console.log(person)
-  response.json(person)
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
 })
 
 const UniqueValueError = (response, message) => {
@@ -91,28 +80,6 @@ const EmptyValueError = (response, message) => {
   ValueError(response, `EmptyValue: ${message}`)
 }
 
-const ValueError = (response, message) => {
-  return response.status(400).json(message)
-}
-
-app.get('/api/person/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const person = persons.find(p => p.id === id)
-
-  if (person) {
-    response.json(person)
-  } else {
-    response.status(404).end()
-  }
-})
-
-app.delete('/api/person/:id', (request, response) => {
-  const id = Number(request.params.id)
-  persons = persons.filter(p => p.id !== id)
-
-  response.status(204).end()
-})
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-})
+const ValueError = (response, message) => (
+  response.status(400).json(message)
+)
