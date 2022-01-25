@@ -39,8 +39,8 @@ app.get('/api/person/:id', (req, res, next) => {
   Person
     .findById(req.params.id)
     .then(p => {
-      if (note) {
-        res.json(note)
+      if (p) {
+        res.json(p)
       } else {
         res.status(404).end()
       }
@@ -66,14 +66,12 @@ app.post('/api/person', (req, res, next) => {
 
 app.put('/api/person/:id', (req, res, next) => {
   const id = req.params.id
-  console.log(id)
   Person
     .findByIdAndUpdate(id, {
       name: req.body.name,
       number: req.body.number
     }, { new:true, runValidators:true })
     .then(p => {
-      console.log(p)
       res.json(p)
     })
     .catch(err => next(err))

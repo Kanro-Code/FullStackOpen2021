@@ -49,7 +49,6 @@ const App = () => {
 			Persons
 			.update(person.id, person)
 			.then(res => {
-				console.log('inside handleExisiting', res)
 				setPersons(persons.map(p => (p.id !== res.id ? p : res)))
 				sendNotification(`${res.name} had their number changed!`, 'succes')
 			})
