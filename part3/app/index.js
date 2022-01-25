@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 3002
 
 // Middleware assignment
 const app = express()
-app.use(morgan())
+app.use(morgan(format))
 app.use(express.static('build'))
 app.use(express.json())
 app.use(cors())
@@ -16,29 +16,6 @@ app.use(errorHandler)
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
-
-// Morgan POST request logger
-const { application, response } = require('express')
-morgan.token('data', (req) => 
-  (req.method === "POST")
-    ? JSON.stringify(req.body)
-    : ''
-)
-
-const morganFunction = (tokens, req, res) => (
-  [
-    tokens.method(req, res),
-    tokens.url(req, res),
-    tokens.status(req, res),
-    tokens.res(req, res, 'content-length'), '-',
-    tokens['response-time'](req, res), 'ms',
-    // res
-  ].join(' ')
-)
-
-// app.use(morgan(morganFunction))
-// app.use(morgan('tiny'))
-
 
 // Routing GETS
 app.get('/info', (req, res, next) => {
@@ -58,6 +35,7 @@ app.get('/api/person', (req, res, next) => {
 })
 
 app.get('/api/person/:id', (req, res, next) => {
+  console.log("Triggered get")
   Person
     .findById(req.params.id)
     .then(p => {
@@ -86,6 +64,21 @@ app.post('/api/person', (req, res, next) => {
     .catch(err => next(err))
 })
 
+app.put('/api/person/:id', (req, res, next) => {
+  const id = req.params.id
+  console.log(id)
+  Person
+    .findByIdAndUpdate(id, {
+      name: req.body.name,
+      number: req.body.number
+    }, { new:true, runValidators:true })
+    .then(p => {
+      console.log(p)
+      res.json(p)
+    })
+    .catch(err => next(err))
+})
+
 // Routing DELETE
 app.delete('/api/person/:id', (req, res, next) => {
   Person.findByIdAndRemove(req.params.id)
@@ -95,8 +88,6 @@ app.delete('/api/person/:id', (req, res, next) => {
 
 // Middleware 
 function errorHandler(err, req, res, next) {
-  console.log(err.message)
-
   if (err.name === 'CastError') {
     return res.status(400).send({ error: 'Malformatted id' })
   }
@@ -104,3 +95,19 @@ function errorHandler(err, req, res, next) {
   next(error)
 }
 
+morgan.token('data', (req) => 
+  (req.method === "POST")
+    ? JSON.stringify(req.body)
+    : ''
+)
+
+function format(tokens, req, res) {
+  return [
+    tokens.method(req, res),
+    tokens.url(req, res),
+    tokens.status(req, res),
+    tokens.res(req, res, 'content-length'), '-',
+    tokens['response-time'](req, res), 'ms',
+    tokens.data(req)
+  ].join(' ')
+}
