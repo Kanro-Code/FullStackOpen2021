@@ -39,6 +39,9 @@ const App = () => {
 				setPersons([...persons, res])
 				sendNotification(`${res.name} was added.`, 'succes')
 			})
+			.catch(err => {
+				sendNotification(err.response.data.message, 'error')
+			})
 		}
 		
 	}
@@ -52,11 +55,14 @@ const App = () => {
 				setPersons(persons.map(p => (p.id !== res.id ? p : res)))
 				sendNotification(`${res.name} had their number changed!`, 'succes')
 			})
+			.catch(err => {
+				sendNotification(err.response.data.message, 'error')
+			})
 		}
 	}
 
 	const sendNotification = (message, type) => {
-		console.log(message, type)
+		console.log('Notification:', message, type)
 		setNotification({message: message, type: type})
 		setTimeout(() => setNotification({}), 5000)
 

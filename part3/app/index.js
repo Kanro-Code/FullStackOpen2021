@@ -11,7 +11,7 @@ app.use(morgan(format))
 app.use(express.static('build'))
 app.use(express.json())
 app.use(cors())
-app.use(errorHandler)
+
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
@@ -35,7 +35,6 @@ app.get('/api/person', (req, res, next) => {
 })
 
 app.get('/api/person/:id', (req, res, next) => {
-  console.log("Triggered get")
   Person
     .findById(req.params.id)
     .then(p => {
@@ -86,13 +85,17 @@ app.delete('/api/person/:id', (req, res, next) => {
 
 // Middleware 
 function errorHandler(err, req, res, next) {
+  console.log("Hi")
   if (err.name === 'CastError') {
     return res.status(400).send({ error: 'Malformatted id' })
+  } else if (err.name === 'ValidationError') {
+    console.log('ValidationError', err.message)
+    return res.status(400).json(err)
   }
 
   next(error)
 }
-
+app.use(errorHandler)
 morgan.token('data', (req) => 
   (req.method === "POST")
     ? JSON.stringify(req.body)
