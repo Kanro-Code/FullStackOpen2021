@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 
 const url = process.env.MONGODB_URI
+const reg = new RegExp(/^\d{2,}-\d{2,}$/)
 
 console.log(`Connecting to ${url}`)
 
@@ -19,7 +20,11 @@ const personSchema = new mongoose.Schema({
   number: {
     type: String,
     minlength: [8, 'Number must be at least 8 characters'],
-    required: [true, 'Number is required']
+    required: [true, 'Number is required'],
+    validate: {
+      validator: (v) => reg.test(v),
+      message: v => `${v.value} is not a valid phone number!`
+    }
   }
 })
 
