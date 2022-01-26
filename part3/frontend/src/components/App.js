@@ -40,6 +40,7 @@ const App = () => {
 				sendNotification(`${res.name} was added.`, 'succes')
 			})
 			.catch(err => {
+				console.log("ERROR MESSAGE TRIGGERED ON HANDLEADD", err)
 				sendNotification(err.response.data.message, 'error')
 			})
 		}
@@ -56,6 +57,7 @@ const App = () => {
 				sendNotification(`${res.name} had their number changed!`, 'succes')
 			})
 			.catch(err => {
+				console.log("ERROR MESSAGE TRIGGERED ON HANDLEXISTING", err)
 				sendNotification(err.response.data.message, 'error')
 			})
 		}
