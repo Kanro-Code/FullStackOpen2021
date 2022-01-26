@@ -6,7 +6,7 @@ const reg = /^\d{2,}-\d{2,}$/
 console.log(`Connecting to ${url}`)
 
 mongoose.connect(url)
-	.then((res) => console.log('Connected to mongodb', res))
+	.then(() => console.log('Connected to mongodb'))
 	.catch((err) => {
 		console.log('Error connecting to Mongodb', err.message)
 	})

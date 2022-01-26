@@ -7,6 +7,9 @@ const Person = require('./models/person')
 
 const PORT = process.env.PORT || 3002
 const app = express()
+app.use(express.static('build'))
+app.use(express.json())
+app.use(cors())
 
 app.listen(PORT, () => {
 	console.log(`Server running on port ${PORT}`)
@@ -44,8 +47,8 @@ app.get('/api/person/:id', (req, res, next) => {
 
 //  Routing POST
 app.post('/api/person', (req, res, next) => {
+	console.log(req.body)
 	const { name, number } = req.body
-
 	if (!name || !number) {
 		return res.status(400).json({
 			error: 'Name or Number missing',
@@ -108,6 +111,3 @@ const format = (tokens, req, res) => [
 // Middleware assignment
 app.use(errorHandler)
 app.use(morgan(format))
-app.use(express.static('build'))
-app.use(express.json())
-app.use(cors())
