@@ -9,7 +9,6 @@ const config = require('./utils/config')
 const app = express()
 
 logger.info(`Connecting to ${config.MONGODB_URI}`)
-console.log(config.MONGODB_URI)
 mongoose.connect(config.MONGODB_URI)
 	.then(() => logger.info('Connected to MongoDB'))
 	.catch((err) => {
