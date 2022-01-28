@@ -105,11 +105,11 @@ describe('totalLikes', () => {
 })
 
 describe('favoriteBlog', () => {
-	test('empty list returns -1', () => {
+	test('empty list returns null', () => {
 		const blogs = []
 
 		const result = listHelper.favoriteBlog(blogs)
-		expect(result).toBe(-1)
+		expect(result).toBe(null)
 	})
 
 	test('premadeList returns correct blog', () => {
