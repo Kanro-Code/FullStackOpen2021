@@ -26,10 +26,7 @@ const mostBlogs = (blogs) => {
 	if (blogs.length === 0) return {}
 	console.log(blogs)
 
-	const tally = {}
-	_.forEach(blogs, (b) => {
-		tally[b.author] = (tally[b.author]) ? tally[b.author] += 1 : 1
-	})
+	const tally = _.countBy(blogs, 'author')
 
 	const most = _.toPairs(tally)
 		.reduce((max, cur) => (
