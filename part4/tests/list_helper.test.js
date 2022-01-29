@@ -164,3 +164,27 @@ describe('mostBlogs', () => {
 		expect(result).toEqual({ author: 'Robert C. Martin', blogs: 3 })
 	})
 })
+
+describe('mostLikes', () => {
+	test('empty array return empty object', () => {
+		const result = listHelper.mostLikes([])
+		expect(result).toEqual({})
+	})
+
+	test('single item return said object', () => {
+		const blog = premadeList.slice(1, 2)
+		const result = listHelper.mostLikes(blog)
+		expect(result).toEqual({ author: 'Edsger W. Dijkstra', likes: 5 })
+	})
+
+	test('single item with 0 likes', () => {
+		const blog = premadeList.slice(4, 5)
+		const result = listHelper.mostLikes(blog)
+		expect(result).toEqual({ author: 'Robert C. Martin', likes: 0 })
+	})
+
+	test('full list with one answer', () => {
+		const result = listHelper.mostLikes(premadeList)
+		expect(result).toEqual({ author: 'Edsger W. Dijkstra', likes: 17 })
+	})
+})

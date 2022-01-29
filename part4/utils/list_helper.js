@@ -22,17 +22,32 @@ const favoriteBlog = (blogs) => {
 	return (blog.likes >= 0) ? blog : null
 }
 
-const mostBlogs = (blogs) => {
-	if (blogs.length === 0) return {}
-	console.log(blogs)
-
-	const tally = _.countBy(blogs, 'author')
-
-	const most = _.toPairs(tally)
+const maxKeyValuePair = (obj) => (
+	_.toPairs(obj)
 		.reduce((max, cur) => (
 			(cur[1] > max[1]) ? cur : max), [0, -1])
+)
+
+const mostBlogs = (blogs) => {
+	if (blogs.length === 0) return {}
+
+	const tally = _.countBy(blogs, 'author')
+	const most = maxKeyValuePair(tally)
+	console.log('most', most)
 
 	return { author: most[0], blogs: most[1] }
+}
+
+const mostLikes = (blogs) => {
+	if (blogs.length === 0) return {}
+
+	const dict = {}
+	blogs.forEach(({ author, likes }) => {
+		dict[author] = dict[author] + likes || likes
+	})
+	const most = maxKeyValuePair(dict)
+
+	return { author: most[0], likes: most[1] }
 }
 
 module.exports = {
@@ -40,4 +55,5 @@ module.exports = {
 	totalLikes,
 	favoriteBlog,
 	mostBlogs,
+	mostLikes,
 }
