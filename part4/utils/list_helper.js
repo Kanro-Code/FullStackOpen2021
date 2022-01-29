@@ -31,11 +31,9 @@ const mostBlogs = (blogs) => {
 		tally[b.author] = (tally[b.author]) ? tally[b.author] += 1 : 1
 	})
 
-	console.log(tally)
-
-	const pairs = _.toPairs(tally)
-	const most = pairs.reduce((max, cur) => (
-		(cur[1] > max[1]) ? cur : max), [0, -1])
+	const most = _.toPairs(tally)
+		.reduce((max, cur) => (
+			(cur[1] > max[1]) ? cur : max), [0, -1])
 
 	return { author: most[0], blogs: most[1] }
 }
