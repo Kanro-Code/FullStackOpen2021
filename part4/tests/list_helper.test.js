@@ -112,8 +112,55 @@ describe('favoriteBlog', () => {
 		expect(result).toBe(null)
 	})
 
+	test('single item in blog list returns that item', () => {
+		const blogs = [{
+			_id: '5a422bc61b54a676234d17fc',
+			title: 'Type wars',
+			author: 'Robert C. Martin',
+			url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
+			likes: 2,
+			__v: 0,
+		}]
+
+		const result = listHelper.favoriteBlog(blogs)
+		expect(result).toEqual(blogs[0])
+	})
+
+	test('single item in blog list with 0 likes', () => {
+		const blogs = [{
+			_id: '5a422b891b54a676234d17fa',
+			title: 'First class tests',
+			author: 'Robert C. Martin',
+			url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
+			likes: 0,
+			__v: 0,
+		}]
+
+		const result = listHelper.favoriteBlog(blogs)
+		expect(result).toEqual(blogs[0])
+	})
+
 	test('premadeList returns correct blog', () => {
 		const result = listHelper.favoriteBlog(premadeList)
-		console.log(result)
+		console.log('result:', result)
+		expect(result).toEqual(premadeList[2])
+	})
+})
+
+describe('mostBlogs', () => {
+	test('empty array returns empty object', () => {
+		const result = listHelper.mostBlogs([])
+		expect(result).toEqual({})
+	})
+
+	test('single item return said object', () => {
+		const blog = premadeList.slice(3, 4)
+		const result = listHelper.mostBlogs(blog)
+		expect(result).toEqual({ author: 'Robert C. Martin', blogs: 1 })
+	})
+
+	test('full list with one answer', () => {
+		const result = listHelper.mostBlogs(premadeList)
+		expect(result).toEqual({ author: 'Robert C. Martin', blogs: 3 })
 	})
 })
