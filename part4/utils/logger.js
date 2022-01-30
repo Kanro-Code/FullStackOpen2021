@@ -1,9 +1,13 @@
 const info = (...p) => {
-	console.log(...p)
+	if (process.env.NODE_ENV !== 'test') {
+		console.log(...p)
+	}
 }
 
 const error = (...p) => {
-	console.error(...p)
+	if (process.env.NODE_ENV !== 'test') {
+		console.error(...p)
+	}
 }
 
 module.exports = { info, error }

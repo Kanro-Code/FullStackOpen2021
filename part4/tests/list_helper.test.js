@@ -142,7 +142,6 @@ describe('favoriteBlog', () => {
 
 	test('premadeList returns correct blog', () => {
 		const result = listHelper.favoriteBlog(premadeList)
-		console.log('result:', result)
 		expect(result).toEqual(premadeList[2])
 	})
 })
