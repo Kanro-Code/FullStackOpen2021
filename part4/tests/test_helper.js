@@ -46,10 +46,13 @@ const nonExisitingId = async () => {
 
 	await blog.save()
 	await blog.remove()
-	console.log(blog)
-	console.log(blog._id.toString())
 
 	return blog._id.toString()
 }
 
-module.exports = { mockupBlogs, nonExisitingId }
+const blogsInDb = async () => {
+	const blogs = Blog.find({})
+	return (await blogs).map((blog) => blog.toJSON())
+}
+
+module.exports = { mockupBlogs, nonExisitingId, blogsInDb }
