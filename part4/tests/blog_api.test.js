@@ -61,6 +61,22 @@ describe('post single blog', () => {
 		expect(urls).toContain(blog.url)
 	}, 100000)
 
+	test('add a blog with missing likes properties, default to 0', async () => {
+		const blog = {
+			title: 'Missing likes count',
+			author: 'bing',
+			url: 'bing.com',
+		}
+
+		const res = await api
+			.post('/api/blogs')
+			.send(blog)
+			.expect(201)
+			.expect('Content-Type', /application\/json/)
+
+		expect(res.body.likes).toBe(0)
+	})
+
 	test('fails with status code 400 if data invalid', async () => {
 		const blog = {
 			title: 'Missing rest of content',
