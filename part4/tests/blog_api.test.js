@@ -78,42 +78,38 @@ describe('post single blog', () => {
 	}, 100000)
 
 	test('reject a blog with missing url or title', async () => {
-		const blogMissingUrl = helper.mockupBlogs[0]
-		delete blogMissingUrl.url
-		const blogMissingTitle = helper.mockupBlogs[1]
-		delete blogMissingTitle.title
-
-		await api
+		const blogMissingUrl = {
+			title: 'Missing url',
+		}
+		let res = await api
 			.post('/api/blogs')
 			.send(blogMissingUrl)
 			.expect(400)
 
-		await api
+		expect(res.body.error).toBeDefined()
+
+		const blogMissingTitle = {
+			url: 'Missing title',
+		}
+
+		res = await api
 			.post('/api/blogs')
 			.send(blogMissingTitle)
 			.expect(400)
 
-		const blogsAtEnd = await helper.blogsInDb()
-
-		expect(blogsAtEnd).toHaveLength(helper.mockupBlogs.length)
-	}, 100000)
-
-	test('fails with status code 400 if data invalid', async () => {
-		const blog = {
-			title: 'Missing rest of content',
-		}
-
-		await api
-			.post('/api/blogs')
-			.send(blog)
-			.expect(400)
+		expect(res.body.error).toBeDefined()
 
 		const blogsAtEnd = await helper.blogsInDb()
+
 		expect(blogsAtEnd).toHaveLength(helper.mockupBlogs.length)
 	}, 100000)
 
 	test('check if blog._id is hidden and replaced by blog.id', async () => {
-		const res = await api.get('/api/blogs')
+		const res = await api
+			.get('/api/blogs')
+			.expect(200)
+			.expect('Content-Type', /application\/json/)
+
 		expect(res.body[0].id).toBeDefined()
 		expect(res.body[0]._id).toBeUndefined()
 	}, 100000)
