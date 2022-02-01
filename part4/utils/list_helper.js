@@ -18,7 +18,6 @@ const favoriteBlog = (blogs) => {
 			? cur
 			: max
 	), { likes: -1 })
-	console.log(blog)
 	return (blog.likes >= 0) ? blog : null
 }
 
@@ -33,7 +32,6 @@ const mostBlogs = (blogs) => {
 
 	const tally = _.countBy(blogs, 'author')
 	const most = maxKeyValuePair(tally)
-	console.log('most', most)
 
 	return { author: most[0], blogs: most[1] }
 }
