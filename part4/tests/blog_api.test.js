@@ -51,9 +51,9 @@ describe('viewing specific single blog', () => {
 	}, 10000)
 
 	test('fails with 400 if id is invalid', async () => {
-		const id = '5a3d5da59070081a82a3445'
+		const id = '5a3d5da59070081a82a35'
 		await api
-			.get(`/api/notes/${id}`)
+			.get(`/api/blogs/${id}`)
 			.expect(400)
 	})
 })
@@ -133,6 +133,32 @@ describe('post single blog', () => {
 		expect(res.body[0].id).toBeDefined()
 		expect(res.body[0]._id).toBeUndefined()
 	}, 100000)
+})
+
+describe('deletion of a single blog', () => {
+	test('succeeds with status code 204 if id is valid', async () => {
+		const blogsAtStart = await helper.blogsInDb()
+		const blogToRemove = blogsAtStart[0]
+
+		await api
+			.delete(`/api/blogs/${blogToRemove.id}`)
+			.expect(204)
+
+		const blogsAtEnd = await helper.blogsInDb()
+
+		expect(blogsAtEnd).toHaveLength(helper.mockupBlogs.length - 1)
+
+		const urls = blogsAtEnd.map((n) => n.url)
+		expect(urls).not.toContain(blogToRemove.url)
+	})
+})
+
+describe('unknown endpoint', () => {
+	test('unknown endpoint returns 404', async () => {
+		await api
+			.get('/api/unknownendpoint')
+			.expect(404)
+	})
 })
 
 afterAll(() => {
