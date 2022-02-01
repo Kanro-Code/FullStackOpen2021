@@ -30,12 +30,32 @@ describe('fecth all blogs', () => {
 })
 
 describe('viewing specific single blog', () => {
-	test('check if Id is gone after deleting', async () => {
+	test('succeeds with a valid id', async () => {
+		const blogs = await helper.blogsInDb()
+		const blog = blogs[0]
+
+		const res = await api
+			.get(`/api/blogs/${blog.id}`)
+			.expect(200)
+			.expect('Content-Type', /application\/json/)
+
+		const blogProcess = JSON.parse(JSON.stringify(blog))
+		expect(res.body).toEqual(blogProcess)
+	})
+
+	test('fails with 404 if blog does not exist', async () => {
 		const id = await helper.nonExisitingId()
 		await api
 			.get(`/api/blogs/${id}`)
 			.expect(404)
 	}, 10000)
+
+	test('fails with 400 if id is invalid', async () => {
+		const id = '5a3d5da59070081a82a3445'
+		await api
+			.get(`/api/notes/${id}`)
+			.expect(400)
+	})
 })
 
 describe('post single blog', () => {
