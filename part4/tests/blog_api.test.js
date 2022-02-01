@@ -8,6 +8,7 @@ const api = supertest(app)
 
 beforeEach(async () => {
 	await Blog.deleteMany({})
+
 	const blogObjects = helper.mockupBlogs.map((b) => new Blog(b))
 	const promises = blogObjects.map((b) => b.save())
 	await Promise.all(promises)
@@ -32,6 +33,12 @@ describe('blog api test', () => {
 		await api
 			.get(`/api/blogs/${id}`)
 			.expect(404)
+	})
+
+	test('check if blog._id is hidden and replaced by blog.id', async () => {
+		const res = await api.get('/api/blogs')
+		expect(res.body[0].id).toBeDefined()
+		expect(res.body[0]._id).toBeUndefined()
 	})
 })
 
