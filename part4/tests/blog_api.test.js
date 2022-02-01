@@ -26,6 +26,13 @@ describe('blog api test', () => {
 		const titles = res.body.map((b) => b.title)
 		expect(titles).toContain('Go To Statement Considered Harmful')
 	}, 100000)
+
+	test('check if Id is gone after deleting', async () => {
+		const id = await helper.nonExisitingId()
+		await api
+			.get(`/api/blogs/${id}`)
+			.expect(404)
+	})
 })
 
 afterAll(() => {

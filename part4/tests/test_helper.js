@@ -1,4 +1,4 @@
-// const Blog = require('../models/blog')
+const Blog = require('../models/blog')
 
 const mockupBlogs = [
 	{
@@ -39,4 +39,17 @@ const mockupBlogs = [
 	},
 ]
 
-module.exports = { mockupBlogs }
+const nonExisitingId = async () => {
+	const blog = new Blog({
+		title: 'TESTdelete', author: 'TESTdelete', url: 'TESTdelete', likes: 0,
+	})
+
+	await blog.save()
+	await blog.remove()
+	console.log(blog)
+	console.log(blog._id.toString())
+
+	return blog._id.toString()
+}
+
+module.exports = { mockupBlogs, nonExisitingId }
