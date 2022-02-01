@@ -75,7 +75,28 @@ describe('post single blog', () => {
 			.expect('Content-Type', /application\/json/)
 
 		expect(res.body.likes).toBe(0)
-	})
+	}, 100000)
+
+	test('reject a blog with missing url or title', async () => {
+		const blogMissingUrl = helper.mockupBlogs[0]
+		delete blogMissingUrl.url
+		const blogMissingTitle = helper.mockupBlogs[1]
+		delete blogMissingTitle.title
+
+		await api
+			.post('/api/blogs')
+			.send(blogMissingUrl)
+			.expect(400)
+
+		await api
+			.post('/api/blogs')
+			.send(blogMissingTitle)
+			.expect(400)
+
+		const blogsAtEnd = await helper.blogsInDb()
+
+		expect(blogsAtEnd).toHaveLength(helper.mockupBlogs.length)
+	}, 100000)
 
 	test('fails with status code 400 if data invalid', async () => {
 		const blog = {
@@ -89,7 +110,7 @@ describe('post single blog', () => {
 
 		const blogsAtEnd = await helper.blogsInDb()
 		expect(blogsAtEnd).toHaveLength(helper.mockupBlogs.length)
-	})
+	}, 100000)
 
 	test('check if blog._id is hidden and replaced by blog.id', async () => {
 		const res = await api.get('/api/blogs')
