@@ -18,5 +18,14 @@ module.exports = {
 		'no-tabs': 0,
 		'no-param-reassign': 0,
 		'no-underscore-dangle': 0,
+		'object-curly-newline': [
+			'error',
+			{
+				ObjectExpression: { consistent: true, multiline: true },
+				ObjectPattern: { consistent: true, multiline: true },
+				ImportDeclaration: 'never',
+				ExportDeclaration: { multiline: true, minProperties: 3 },
+			},
+		],
 	},
 }

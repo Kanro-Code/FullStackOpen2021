@@ -153,6 +153,41 @@ describe('deletion of a single blog', () => {
 	})
 })
 
+describe('updating of a single blog', () => {
+	test('update all attributes and returns 200 and correct json', async () => {
+		const blogToUpdate = await helper.getSingleBlog()
+
+		blogToUpdate.author = 'Author name changed'
+		blogToUpdate.url = 'https://urlhasbeenupdated.com'
+		blogToUpdate.title = 'Title has also changed'
+		blogToUpdate.likes += 1
+
+		const res = await api
+			.put(`/api/blogs/${blogToUpdate.id}`)
+			.send(blogToUpdate)
+			.expect(200)
+
+		const processedBlog = JSON.parse(JSON.stringify(blogToUpdate))
+		expect(res.body).toEqual(processedBlog)
+
+		expect(res.body.id).toBe(blogToUpdate.id)
+	})
+
+	test('only update likes', async () => {
+		const blogsAtStart = await helper.blogsInDb()
+		const blogToUpdate = blogsAtStart[0]
+		blogToUpdate.likes += 1
+
+		const res = await api
+			.put(`/api/blogs/${blogToUpdate.id}`)
+			.send(blogToUpdate)
+			.expect(200)
+
+		const processedBlog = JSON.parse(JSON.stringify(blogToUpdate))
+		expect(res.body).toEqual(processedBlog)
+	})
+})
+
 describe('unknown endpoint', () => {
 	test('unknown endpoint returns 404', async () => {
 		await api
