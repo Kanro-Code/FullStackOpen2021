@@ -31,7 +31,7 @@ describe('when there is initially one user in db', () => {
 		const usersAtEnd = await helper.usersInDb()
 		expect(usersAtEnd).toHaveLength(usersAtStart.length + 1)
 
-		const usernames = usersAtEnd.map(n => n.username)
+		const usernames = usersAtEnd.map((n) => n.username)
 		expect(usernames).toContain(newUser.username)
 	}, 100000)
 

@@ -16,7 +16,7 @@ module.exports = {
 		semi: ['error', 'never'],
 		'no-console': 0,
 		'no-tabs': 0,
-		'no-param-reassign': 0,
+		'no-param-reassign': 1,
 		'no-underscore-dangle': 0,
 		'object-curly-newline': [
 			'error',
@@ -27,6 +27,6 @@ module.exports = {
 				ExportDeclaration: { multiline: true, minProperties: 3 },
 			},
 		],
-		treatUndefinedAsUnspecficied: true,
+		'consistent-return': 0,
 	},
 }
