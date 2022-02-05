@@ -1,4 +1,5 @@
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 const mockupBlogs = [
 	{
@@ -39,6 +40,21 @@ const mockupBlogs = [
 	},
 ]
 
+const mockupUsers = () => (
+	[
+		{
+			username: 'GoodName123',
+			name: 'Good U. Name',
+			password: '16letters4symbols',
+		},
+		{
+			username: 'TestingUser',
+			name: 'SuperUser',
+			password: 'oldpassword+!',
+		},
+	]
+)
+
 const nonExisitingId = async () => {
 	const blog = new Blog({
 		title: 'TESTdelete', author: 'TESTdelete', url: 'TESTdelete', likes: 0,
@@ -52,7 +68,7 @@ const nonExisitingId = async () => {
 
 const blogsInDb = async () => {
 	const blogs = Blog.find({})
-	return (await blogs).map((blog) => blog.toJSON())
+	return (await blogs).map((n) => n.toJSON())
 }
 
 const getSingleBlog = async () => {
@@ -60,4 +76,16 @@ const getSingleBlog = async () => {
 	return blogs.shift()
 }
 
-module.exports = { mockupBlogs, nonExisitingId, blogsInDb, getSingleBlog }
+const usersInDb = async () => {
+	const users = User.find({})
+	return (await users).map((n) => n.toJSON())
+}
+
+module.exports = {
+	mockupBlogs,
+	mockupUsers,
+	nonExisitingId,
+	blogsInDb,
+	getSingleBlog,
+	usersInDb,
+}
