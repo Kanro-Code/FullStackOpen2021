@@ -48,6 +48,18 @@ blogsRouter.put('/:id', async (req, res) => {
 })
 
 blogsRouter.delete('/:id', async (req, res) => {
+	const blog = await Blog.findById(req.params.id)
+
+	if (!blog) {
+		return res.status(404).end()
+	}
+
+	const { id } = jwt.verify(req.token, config.SECRET)
+
+	if (blog.user.toString() !== id) {
+		return res.status(403).end()
+	}
+
 	await Blog.findByIdAndRemove(req.params.id)
 	res.status(204).end()
 })
