@@ -1,5 +1,7 @@
-/* eslint-disable no-else-return */
+const jwt = require('jsonwebtoken')
+const User = require('../models/user')
 const logger = require('./logger')
+const config = require('./config')
 
 const requestLogger = (req, res, next) => {
 	logger.info(`Method: ${req.method}`)
@@ -13,17 +15,19 @@ const unknownEndpoint = (req, res) => {
 	res.status(404).send({ error: 'Unknown Endpoint' })
 }
 
-// eslint-disable-next-line consistent-return
 const errorHandler = (err, req, res, next) => {
 	logger.error(err.message)
 
 	if (err.name === 'CastError') {
 		return res.status(400).send({ error: 'Malformatted Id' })
-	} else if (err.name === 'ValidationError') {
+	}
+	if (err.name === 'ValidationError') {
 		return res.status(400).json({ error: err.message })
-	} else if (err.name === 'JsonWebTokenError') {
+	}
+	if (err.name === 'JsonWebTokenError') {
 		return res.status(401).json({ error: 'invalid token' })
-	} else if (err.name === 'TokenExpiredError') {
+	}
+	if (err.name === 'TokenExpiredError') {
 		return res.status(401).json({ error: 'token expired' })
 	}
 
@@ -38,7 +42,17 @@ const tokenExtractor = (req, res, next) => {
 	} else {
 		req.token = null
 	}
-	logger.info(req.token)
+
+	next()
+}
+
+const userExtractor = async (req, res, next) => {
+	const { id } = jwt.verify(req.token, config.SECRET)
+	const user = await User.findById(id)
+	if (!user) {
+		return res.status(401).json({ error: 'token missing or invalid' })
+	}
+	req.user = user
 
 	next()
 }
@@ -48,4 +62,5 @@ module.exports = {
 	unknownEndpoint,
 	errorHandler,
 	tokenExtractor,
+	userExtractor,
 }
