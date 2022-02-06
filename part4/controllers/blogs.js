@@ -6,7 +6,7 @@ const config = require('../utils/config')
 
 const getTokenFrom = (req) => {
 	const auth = req.get('authorization')
-	console.log(auth)
+
 	if (auth && auth.toLowerCase().startsWith('bearer ')) {
 		return auth.substring(7)
 	}

@@ -12,14 +12,13 @@ describe('when there is initially one user in db', () => {
 		await User.deleteMany({})
 
 		const passwordHash = await bcrypt.hash('secret', 10)
-		const user = new User({ username: 'root', passwordHash })
+		const user = new User({ username: 'root', name: 'admin', passwordHash })
 
 		await user.save()
 	}, 100000)
 
 	test('creation succeeds with a fresh username', async () => {
 		const usersAtStart = await helper.usersInDb()
-
 		const newUser = helper.mockupUsers()[0]
 
 		await api
@@ -87,6 +86,46 @@ describe('when there is initially one user in db', () => {
 
 		const usersAtEnd = await helper.usersInDb()
 		expect(usersAtEnd).toHaveLength(usersAtStart.length)
+	}, 100000)
+
+	test('creation fails with proper statuscode and message if name too short', async () => {
+		const usersAtStart = await helper.usersInDb()
+
+		const newUser = helper.mockupUsers()[0]
+		newUser.name = '123'
+
+		const result = await api
+			.post('/api/users')
+			.send(newUser)
+			.expect(400)
+			.expect('Content-Type', /application\/json/)
+
+		expect(result.body.error).toContain('is shorter than the minimum allowed length')
+
+		const usersAtEnd = await helper.usersInDb()
+		expect(usersAtEnd).toHaveLength(usersAtStart.length)
+	}, 100000)
+
+	test('creation fails with username already taken', async () => {
+		const newUser = helper.mockupUsers()[0]
+		await api.post('/api/users').send(newUser)
+
+		const usernameDupe = {
+			name: 'Different name',
+			password: 'Different password',
+			username: newUser.username,
+		}
+
+		const usersInDb = await helper.usersInDb()
+
+		await api
+			.post('/api/users')
+			.send(usernameDupe)
+			.expect(400)
+			.expect('Content-Type', /application\/json/)
+
+		const usersInDbAfter = await helper.usersInDb()
+		expect(usersInDb).toHaveLength(usersInDbAfter.length)
 	})
 }, 100000)
 
