@@ -1,7 +1,7 @@
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
-const mockupBlogs = [
+const mockupBlogs = () => ([
 	{
 		title: 'React patterns',
 		author: 'Michael Chan',
@@ -38,7 +38,7 @@ const mockupBlogs = [
 		url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
 		likes: 2,
 	},
-]
+])
 
 const mockupUsers = () => (
 	[
@@ -71,11 +71,6 @@ const blogsInDb = async () => {
 	return (await blogs).map((n) => n.toJSON())
 }
 
-const getSingleBlog = async () => {
-	const blogs = await blogsInDb()
-	return blogs.shift()
-}
-
 const usersInDb = async () => {
 	const users = User.find({})
 	return (await users).map((n) => n.toJSON())
@@ -86,6 +81,5 @@ module.exports = {
 	mockupUsers,
 	nonExisitingId,
 	blogsInDb,
-	getSingleBlog,
 	usersInDb,
 }

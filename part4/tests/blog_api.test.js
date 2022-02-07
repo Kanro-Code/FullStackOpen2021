@@ -3,6 +3,7 @@ const supertest = require('supertest')
 const bcrypt = require('bcrypt')
 const app = require('../app')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const helper = require('./test_helper')
 
 const api = supertest(app)
@@ -30,10 +31,16 @@ const loginUser = async (user) => {
 }
 
 beforeEach(async () => {
+	await User.deleteMany({})
 	await Blog.deleteMany({})
 
-	const blogObjects = helper.mockupBlogs.map((n) => new Blog(n))
-	const promises = blogObjects.map((n) => n.save())
+	const user = await createUser()
+
+	const promises = helper.mockupBlogs().map((n) => {
+		const blog = new Blog({ ...n, user })
+		return blog.save()
+	})
+
 	await Promise.all(promises)
 }, 100000)
 
@@ -41,7 +48,7 @@ describe('fecth all blogs', () => {
 	test('all blogs returned as json', async () => {
 		const res = await api.get('/api/blogs')
 
-		expect(res.body).toHaveLength(helper.mockupBlogs.length)
+		expect(res.body).toHaveLength(helper.mockupBlogs().length)
 	}, 100000)
 
 	test('a specficic blog is within the returned blogs', async () => {
@@ -62,8 +69,8 @@ describe('viewing specific single blog', () => {
 			.expect(200)
 			.expect('Content-Type', /application\/json/)
 
-		const blogProcess = JSON.parse(JSON.stringify(blog))
-		expect(res.body).toEqual(blogProcess)
+		expect(res.body.id).toBeDefined()
+		expect(res.body.title).toBe(blog.title)
 	})
 
 	test('fails with 404 if blog does not exist', async () => {
@@ -83,6 +90,8 @@ describe('viewing specific single blog', () => {
 
 describe('post single blog', () => {
 	test('add a blog, and verify that its added', async () => {
+		const users = await helper.usersInDb()
+		const token = await loginUser(users[0])
 		const blog = {
 			title: 'Single test',
 			author: 'Stackoverflow',
@@ -92,19 +101,36 @@ describe('post single blog', () => {
 
 		const res = await api
 			.post('/api/blogs')
+			.set({ Authorization: `Bearer ${token}` })
 			.send(blog)
 			.expect(201)
 			.expect('Content-Type', /application\/json/)
 
 		expect(res.body.id).toBeDefined()
 		const blogsAtEnd = await helper.blogsInDb()
-		expect(blogsAtEnd).toHaveLength(helper.mockupBlogs.length + 1)
+		expect(blogsAtEnd).toHaveLength(helper.mockupBlogs().length + 1)
 
 		const urls = blogsAtEnd.map((n) => n.url)
 		expect(urls).toContain(blog.url)
 	}, 100000)
 
+	test('fail to add a blog with missing authorization token', async () => {
+		const blogsAtStart = await helper.blogsInDb()
+		const blog = blogsAtStart[0]
+
+		await api
+			.post('/api/blogs')
+			.send(blog)
+			.expect(401)
+			.expect('Content-Type', /application\/json/)
+
+		const blogsAtEnd = await helper.blogsInDb()
+		expect(blogsAtStart).toHaveLength(blogsAtEnd.length)
+	})
+
 	test('add a blog with missing likes properties, default to 0', async () => {
+		const users = await helper.usersInDb()
+		const token = await loginUser(users[0])
 		const blog = {
 			title: 'Missing likes count',
 			author: 'bing',
@@ -113,6 +139,7 @@ describe('post single blog', () => {
 
 		const res = await api
 			.post('/api/blogs')
+			.set({ Authorization: `Bearer ${token}` })
 			.send(blog)
 			.expect(201)
 			.expect('Content-Type', /application\/json/)
@@ -121,11 +148,14 @@ describe('post single blog', () => {
 	}, 100000)
 
 	test('reject a blog with missing url or title', async () => {
+		const users = await helper.usersInDb()
+		const token = await loginUser(users[0])
 		const blogMissingUrl = {
 			title: 'Missing url',
 		}
 		let res = await api
 			.post('/api/blogs')
+			.set({ Authorization: `Bearer ${token}` })
 			.send(blogMissingUrl)
 			.expect(400)
 
@@ -137,6 +167,7 @@ describe('post single blog', () => {
 
 		res = await api
 			.post('/api/blogs')
+			.set({ Authorization: `Bearer ${token}` })
 			.send(blogMissingTitle)
 			.expect(400)
 
@@ -144,7 +175,7 @@ describe('post single blog', () => {
 
 		const blogsAtEnd = await helper.blogsInDb()
 
-		expect(blogsAtEnd).toHaveLength(helper.mockupBlogs.length)
+		expect(blogsAtEnd).toHaveLength(helper.mockupBlogs().length)
 	}, 100000)
 
 	test('check if blog._id is hidden and replaced by blog.id', async () => {
@@ -160,25 +191,42 @@ describe('post single blog', () => {
 
 describe('deletion of a single blog', () => {
 	test('succeeds with status code 204 if id is valid', async () => {
+		const users = await helper.usersInDb()
+		const token = await loginUser(users[0])
 		const blogsAtStart = await helper.blogsInDb()
 		const blogToRemove = blogsAtStart[0]
 
 		await api
 			.delete(`/api/blogs/${blogToRemove.id}`)
+			.set({ Authorization: `Bearer ${token}` })
 			.expect(204)
 
 		const blogsAtEnd = await helper.blogsInDb()
 
-		expect(blogsAtEnd).toHaveLength(helper.mockupBlogs.length - 1)
+		expect(blogsAtEnd).toHaveLength(helper.mockupBlogs().length - 1)
 
 		const urls = blogsAtEnd.map((n) => n.url)
 		expect(urls).not.toContain(blogToRemove.url)
+	})
+
+	test('fails to deleted if authentication is missing', async () => {
+		const blogsAtStart = await helper.blogsInDb()
+		const blogToRemove = blogsAtStart[0]
+
+		await api
+			.delete(`/api/blogs/${blogToRemove.id}`)
+			.expect(401)
+
+		const blogsAtEnd = await helper.blogsInDb()
+		expect(blogsAtEnd).toHaveLength(blogsAtStart.length)
 	})
 })
 
 describe('updating of a single blog', () => {
 	test('update all attributes and returns 200 and correct json', async () => {
-		const blogToUpdate = await helper.getSingleBlog()
+		const blogs = await helper.blogsInDb()
+		const blogToUpdate = blogs[0]
+		console.log(blogToUpdate)
 
 		blogToUpdate.author = 'Author name changed'
 		blogToUpdate.url = 'https://urlhasbeenupdated.com'
@@ -219,6 +267,7 @@ describe('unknown endpoint', () => {
 	})
 })
 
-afterAll(() => {
+afterAll((done) => {
 	mongoose.connection.close()
+	done()
 })

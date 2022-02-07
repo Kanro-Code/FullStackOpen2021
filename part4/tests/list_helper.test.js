@@ -27,7 +27,7 @@ describe('totalLikes', () => {
 	})
 
 	test('premade list returns 36', () => {
-		const result = listHelper.totalLikes(mockupBlogs)
+		const result = listHelper.totalLikes(mockupBlogs())
 		expect(result).toBe(36)
 	})
 
@@ -92,8 +92,8 @@ describe('favoriteBlog', () => {
 	})
 
 	test('mockupBlogs returns correct blog', () => {
-		const result = listHelper.favoriteBlog(mockupBlogs)
-		expect(result).toEqual(mockupBlogs[2])
+		const result = listHelper.favoriteBlog(mockupBlogs())
+		expect(result).toEqual(mockupBlogs()[2])
 	})
 })
 
@@ -104,13 +104,13 @@ describe('mostBlogs', () => {
 	})
 
 	test('single item return said object', () => {
-		const blog = mockupBlogs.slice(3, 4)
+		const blog = mockupBlogs().slice(3, 4)
 		const result = listHelper.mostBlogs(blog)
 		expect(result).toEqual({ author: 'Robert C. Martin', blogs: 1 })
 	})
 
 	test('full list with one answer', () => {
-		const result = listHelper.mostBlogs(mockupBlogs)
+		const result = listHelper.mostBlogs(mockupBlogs())
 		expect(result).toEqual({ author: 'Robert C. Martin', blogs: 3 })
 	})
 })
@@ -122,19 +122,19 @@ describe('mostLikes', () => {
 	})
 
 	test('single item return said object', () => {
-		const blog = mockupBlogs.slice(1, 2)
+		const blog = mockupBlogs().slice(1, 2)
 		const result = listHelper.mostLikes(blog)
 		expect(result).toEqual({ author: 'Edsger W. Dijkstra', likes: 5 })
 	})
 
 	test('single item with 0 likes', () => {
-		const blog = mockupBlogs.slice(4, 5)
+		const blog = mockupBlogs().slice(4, 5)
 		const result = listHelper.mostLikes(blog)
 		expect(result).toEqual({ author: 'Robert C. Martin', likes: 0 })
 	})
 
 	test('full list with one answer', () => {
-		const result = listHelper.mostLikes(mockupBlogs)
+		const result = listHelper.mostLikes(mockupBlogs())
 		expect(result).toEqual({ author: 'Edsger W. Dijkstra', likes: 17 })
 	})
 })
