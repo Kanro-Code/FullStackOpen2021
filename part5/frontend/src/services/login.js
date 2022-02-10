@@ -4,7 +4,7 @@ const baseUrl = '/api/login'
 const login = async (username, password) => {
 	try {
 		const post = await axios.post(baseUrl, { username, password })
-		return post.data.token
+		return post.data
 	} catch(e) {
 		console.log(e)
 		return null

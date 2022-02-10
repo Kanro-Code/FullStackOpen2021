@@ -1,15 +1,16 @@
 import React, { useState } from 'react'
-import loginService  from '../services/login'
 
-const LoginForm = ({setUser}) => {
-	const [username, setUsername] = useState()
-	const [password, setPassword] = useState()
+const Form = ({ handleLogin }) => {
+	const [username, setUsername] = useState('')
+	const [password, setPassword] = useState('')
 
 	const handleSubmit = async (e) => {
 		e.preventDefault()
 
-		const token = await loginService.login(username, password)
-		console.log(token)
+		if (await handleLogin(username, password)) {
+			setUsername('')
+			setPassword('')
+		}
 	}
 
 	return (
@@ -35,6 +36,7 @@ const LoginForm = ({setUser}) => {
 			<button type='submit'>Login</button>
 		</form>
 	)
+
 }
 
-export default LoginForm
+export default Form

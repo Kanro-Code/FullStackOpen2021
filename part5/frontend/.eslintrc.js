@@ -5,7 +5,7 @@ module.exports = {
 		es2021: true,
 		jest: true,
 	},
-	extends: ['airbnb', 'airbnb/hooks'],
+	// extends: ['airbnb', 'airbnb/hooks'],
 	parserOptions: {
 		ecmaVersion: 'latest',
 	},
@@ -28,6 +28,5 @@ module.exports = {
 			},
 		],
 		'consistent-return': 0,
-		'import/no-anonymous-default-export': [2, {"allowObject": true}],
 	},
 }
