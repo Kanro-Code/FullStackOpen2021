@@ -27,6 +27,8 @@ const App = () => {
 		try {
 			const user = await loginService.login(username, password)
 			setUser(user)
+			const userJSON = JSON.stringify(user)
+			window.localStorage.setItem('authUser', userJSON)
 			console.log(user)
 			return true
 		} catch(e) {
@@ -37,6 +39,7 @@ const App = () => {
 	const handleLogout = () => {
 		console.log('Hi?')
 		setUser(null)
+		window.localStorage.setItem('authUser', null)
 	}
 
 	return (
