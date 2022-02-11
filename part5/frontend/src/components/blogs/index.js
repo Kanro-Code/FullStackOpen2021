@@ -2,7 +2,7 @@ import React from 'react'
 import Blog from './Blog'
 import New from './New'
 
-const Blogs = ({ blogs, handleNewBlog }) => (
+const Blogs = ({ blogs, handleNewBlog, handleDelete }) => (
 	<div>
 		<New handleNewBlog={handleNewBlog} />
 
@@ -10,7 +10,11 @@ const Blogs = ({ blogs, handleNewBlog }) => (
 		{ (!blogs)
 			? <div>No blogs at this time</div>
 			: blogs.map(blog =>
-				<Blog key={blog.id} blog={blog} />
+				<Blog 
+					key={blog.id} 
+					blog={blog}
+					handleDelete={handleDelete} 
+				/>
 			)
 		}
 	</div>

@@ -24,15 +24,11 @@ const App = () => {
 	},[])
 
 	const handleLogin = async (username, password) => {
-		try {
-			const user = await loginService.login(username, password)
-			setUser(user)
-			const userJSON = JSON.stringify(user)
-			window.localStorage.setItem('authUser', userJSON)
-			return true
-		} catch(e) {
-			console.error(e)
-		}
+		const user = await loginService.login(username, password)
+		setUser(user)
+		const userJSON = JSON.stringify(user)
+		window.localStorage.setItem('authUser', userJSON)
+		return user
 	}
 
 	const handleLogout = () => {
@@ -40,10 +36,18 @@ const App = () => {
 		window.localStorage.setItem('authUser', null)
 	}
 
+	const handleDelete = async (id) => {
+		const success = await blogService.deleteOne(id, user.token)
+		if (success) {
+			const newBlogs = blogs.filter(n => n.id !== id)
+			setBlogs(newBlogs)
+		}
+	}
+
 	const handleNewBlog = async (newBlog) => {
-		const blog = await blogService.addNew(newBlog, user)
+		const blog = await blogService.addNew(newBlog, user.token)
 		setBlogs([...blogs, blog])
-		return true
+		return blog
 	}
 
 	return (
@@ -57,6 +61,7 @@ const App = () => {
 			{ (user !== null) && <Blogs 
 				blogs={blogs} 
 				handleNewBlog={handleNewBlog} 
+				handleDelete={handleDelete}
 			/> }
 		</div>
 	)

@@ -13,7 +13,7 @@ const getAll = async (token) => {
 	}
 }
 
-const addNew = async (newBlog, { token }) => {
+const addNew = async (newBlog, token) => {
 	const config = {
 		headers: { Authorization: `Bearer ${token}` }
 	}
@@ -25,5 +25,18 @@ const addNew = async (newBlog, { token }) => {
 	}
 }
 
-const blogService = { getAll, addNew }
+const deleteOne = async (id, token) => {
+	const config = {
+		headers: { Authorization: `Bearer ${token}`}
+	}
+
+	try {
+		await axios.delete(baseUrl + `/${id}`, config)
+		return true
+	} catch(e) {
+		console.error(e)
+	}
+}
+
+const blogService = { getAll, addNew, deleteOne }
 export default blogService
