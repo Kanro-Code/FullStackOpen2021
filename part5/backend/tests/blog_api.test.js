@@ -90,10 +90,13 @@ describe('viewing specific single blog', () => {
 
 describe('post single blog', () => {
 	test('add a blog, and verify that its added', async () => {
-		const users = await helper.usersInDb()
-		const token = await loginUser(users[0])
-		const blog = {
-			title: 'Single test',
+		const blogsAtStart = await helper.blogsInDb()
+		const usersAtStart = await helper.usersInDb()
+		const token = await loginUser(usersAtStart[0])
+		console.log(token)
+
+		const blogToAdd = {
+			title: 'Single Test',
 			author: 'Stackoverflow',
 			url: 'https://stackoverflow.com/questions/41132933/running-a-single-test-file',
 			likes: 0,
@@ -102,16 +105,22 @@ describe('post single blog', () => {
 		const res = await api
 			.post('/api/blogs')
 			.set({ Authorization: `Bearer ${token}` })
-			.send(blog)
+			.send(blogToAdd)
 			.expect(201)
 			.expect('Content-Type', /application\/json/)
 
+		expect(res.body.title).toBe(blogToAdd.title)
+		expect(res.body.user).toBeDefined()
 		expect(res.body.id).toBeDefined()
-		const blogsAtEnd = await helper.blogsInDb()
-		expect(blogsAtEnd).toHaveLength(helper.mockupBlogs().length + 1)
+		expect(res.body._id).toBeUndefined()
 
-		const urls = blogsAtEnd.map((n) => n.url)
-		expect(urls).toContain(blog.url)
+		const blogsAtEnd = await helper.blogsInDb()
+		const usersAtEnd = await helper.usersInDb()
+
+		expect(blogsAtEnd).toHaveLength(blogsAtStart.length + 1)
+		expect(usersAtEnd[0].blogs).toHaveLength(usersAtStart[0].blogs.length + 1)
+
+		console.log(res.body)
 	}, 100000)
 
 	test('fail to add a blog with missing authorization token', async () => {
@@ -126,7 +135,7 @@ describe('post single blog', () => {
 
 		const blogsAtEnd = await helper.blogsInDb()
 		expect(blogsAtStart).toHaveLength(blogsAtEnd.length)
-	})
+	}, 100000)
 
 	test('add a blog with missing likes properties, default to 0', async () => {
 		const users = await helper.usersInDb()
@@ -207,7 +216,7 @@ describe('deletion of a single blog', () => {
 
 		const urls = blogsAtEnd.map((n) => n.url)
 		expect(urls).not.toContain(blogToRemove.url)
-	})
+	}, 100000)
 
 	test('fails to deleted if authentication is missing', async () => {
 		const blogsAtStart = await helper.blogsInDb()
@@ -219,14 +228,13 @@ describe('deletion of a single blog', () => {
 
 		const blogsAtEnd = await helper.blogsInDb()
 		expect(blogsAtEnd).toHaveLength(blogsAtStart.length)
-	})
+	}, 100000)
 })
 
 describe('updating of a single blog', () => {
 	test('update all attributes and returns 200 and correct json', async () => {
 		const blogs = await helper.blogsInDb()
 		const blogToUpdate = blogs[0]
-		console.log(blogToUpdate)
 
 		blogToUpdate.author = 'Author name changed'
 		blogToUpdate.url = 'https://urlhasbeenupdated.com'
@@ -242,7 +250,7 @@ describe('updating of a single blog', () => {
 		expect(res.body).toEqual(processedBlog)
 
 		expect(res.body.id).toBe(blogToUpdate.id)
-	})
+	}, 100000)
 
 	test('only update likes', async () => {
 		const blogsAtStart = await helper.blogsInDb()
@@ -256,7 +264,7 @@ describe('updating of a single blog', () => {
 
 		const processedBlog = JSON.parse(JSON.stringify(blogToUpdate))
 		expect(res.body).toEqual(processedBlog)
-	})
+	}, 100000)
 })
 
 describe('unknown endpoint', () => {
@@ -264,7 +272,7 @@ describe('unknown endpoint', () => {
 		await api
 			.get('/api/unknownendpoint')
 			.expect(404)
-	})
+	}, 100000)
 })
 
 afterAll((done) => {

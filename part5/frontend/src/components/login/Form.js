@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import Input from '../forms/Input'
 
 const Form = ({ handleLogin }) => {
 	const [username, setUsername] = useState('')
@@ -15,24 +16,18 @@ const Form = ({ handleLogin }) => {
 
 	return (
 		<form onSubmit={handleSubmit}>
-			<div>
-				Username: 
-				<input
-					type="text"
-					value={username}
-					name="Username"
-					onChange={({ target }) => setUsername(target.value)}
-				/ >
-			</div>
-			<div>
-				Password:
-				<input
-					type="password"
-					value={password}
-					name="Password"
-					onChange={({ target }) => setPassword(target.value)}
-				/ >
-			</div>
+			<Input 
+				name="username"
+				type="text" 
+				value={username} 
+				setter={setUsername} 
+			/>
+			<Input 
+				name="password"
+				type="password" 
+				value={password} 
+				setter={setPassword} 
+			/>
 			<button type='submit'>Login</button>
 		</form>
 	)

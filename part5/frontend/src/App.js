@@ -40,6 +40,11 @@ const App = () => {
 		window.localStorage.setItem('authUser', null)
 	}
 
+	const handleNewBlog = async (newBlog) => {
+		const blog = await blogService.addNew(newBlog, user)
+		console.log(newBlog)
+	}
+
 	return (
 		<div>
 			<h2>blogs</h2>
@@ -48,7 +53,10 @@ const App = () => {
 				handleLogout={handleLogout} 
 				user={user} 
 			/>
-			{ (user) && <Blogs blogs={blogs} />}
+			{ (user !== null) && <Blogs 
+				blogs={blogs} 
+				handleNewBlog={handleNewBlog} 
+			/> }
 		</div>
 	)
 }

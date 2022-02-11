@@ -3,9 +3,12 @@ const bcrypt = require('bcrypt')
 const loginRouter = require('express').Router()
 const User = require('../models/user')
 const config = require('../utils/config')
+const logger = require('../utils/logger')
 
 loginRouter.post('/', async (req, res) => {
 	const { body } = req
+
+	logger.info(`User: ${ body.username } attempt logging in.`)
 
 	const user = await User.findOne({ username: body.username })
 	const passwordCorrect = (user === null)
@@ -13,6 +16,7 @@ loginRouter.post('/', async (req, res) => {
 		: await bcrypt.compare(body.password, user.passwordHash)
 
 	if (!(user && passwordCorrect)) {
+		logger.info(`User: ${ body.username } failed - invalid credentials`)
 		return res.status(401).json({
 			error: 'invalid username or password',
 		})
@@ -28,6 +32,8 @@ loginRouter.post('/', async (req, res) => {
 		config.SECRET,
 		// { expiresIn: 60 * 60 },
 	)
+
+	logger.info(`User ${ body.username } logged in successfully`)
 
 	res
 		.status(200)
