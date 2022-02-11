@@ -42,7 +42,8 @@ const App = () => {
 
 	const handleNewBlog = async (newBlog) => {
 		const blog = await blogService.addNew(newBlog, user)
-		console.log(newBlog)
+		setBlogs([...blogs, blog])
+		return true
 	}
 
 	return (

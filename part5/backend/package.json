@@ -29,7 +29,7 @@
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
     "mongoose": "^6.1.8",
-    "mongoose-unique-validator": "^3.0.0",
+    "mongoose-unique-validator": "^2.0.3",
     "p": "^0.2.0"
   },
   "jest": {

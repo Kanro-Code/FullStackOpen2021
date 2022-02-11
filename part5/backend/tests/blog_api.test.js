@@ -93,7 +93,6 @@ describe('post single blog', () => {
 		const blogsAtStart = await helper.blogsInDb()
 		const usersAtStart = await helper.usersInDb()
 		const token = await loginUser(usersAtStart[0])
-		console.log(token)
 
 		const blogToAdd = {
 			title: 'Single Test',
@@ -119,8 +118,6 @@ describe('post single blog', () => {
 
 		expect(blogsAtEnd).toHaveLength(blogsAtStart.length + 1)
 		expect(usersAtEnd[0].blogs).toHaveLength(usersAtStart[0].blogs.length + 1)
-
-		console.log(res.body)
 	}, 100000)
 
 	test('fail to add a blog with missing authorization token', async () => {
