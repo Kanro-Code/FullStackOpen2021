@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import Blogs from './components/Blogs'
+import Blogs from './components/blogs/index'
 import Login from './components/login/index'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -12,7 +12,7 @@ const App = () => {
 		blogService.getAll().then((b) =>
 			setBlogs(b)
 		)	
-	}, [])
+	},[])
 	
 	useEffect(() => {
 		const authUser = window.localStorage.getItem('authUser')
@@ -21,7 +21,7 @@ const App = () => {
 			const user = JSON.parse(authUser)
 			setUser(user)
 		}
-	}, [])
+	},[])
 
 	const handleLogin = async (username, password) => {
 		try {
@@ -29,7 +29,6 @@ const App = () => {
 			setUser(user)
 			const userJSON = JSON.stringify(user)
 			window.localStorage.setItem('authUser', userJSON)
-			console.log(user)
 			return true
 		} catch(e) {
 			console.error(e)
@@ -37,7 +36,6 @@ const App = () => {
 	}
 
 	const handleLogout = () => {
-		console.log('Hi?')
 		setUser(null)
 		window.localStorage.setItem('authUser', null)
 	}
