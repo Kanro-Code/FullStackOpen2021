@@ -8,7 +8,8 @@ const Blogs = React.forwardRef((props, ref) => {
 		blogs, 
 		handleNewBlog, 
 		handleDelete,
-		handleLike
+		handleLike,
+		user,
 	} = props
 	return (
 		<div>
@@ -28,6 +29,7 @@ const Blogs = React.forwardRef((props, ref) => {
 								blog={b}
 								handleDelete={handleDelete}
 								handleLike={handleLike}
+								user={user}
 							/>
 						)}
 					</ul>

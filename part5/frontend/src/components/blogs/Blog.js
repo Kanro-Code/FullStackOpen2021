@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const Blog = ({ blog, handleDelete, handleLike }) => {
+const Blog = ({ blog, handleDelete, handleLike, user }) => {
 	const [viewDetails, setViewDetails] = useState(false)
 
 	const toggleView = () => {
@@ -12,6 +12,8 @@ const Blog = ({ blog, handleDelete, handleLike }) => {
 			handleDelete(id)
 		}
 	}
+
+	const userOwnsBlog = (blog.user.id === user.id)
 
 	const style = {
 		padding: '10px',
@@ -30,7 +32,9 @@ const Blog = ({ blog, handleDelete, handleLike }) => {
 					likes: {blog.likes} 
 					<button onClick={() => handleLike(blog.id)}>like</button>
 					<br />
-					<button onClick={() => clickDelete(blog.id)}>Delete</button>
+					{(userOwnsBlog) &&
+						<button onClick={() => clickDelete(blog.id)}>Delete</button>
+					}
 				</>
 			}
 		</div>

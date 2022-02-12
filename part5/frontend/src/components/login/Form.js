@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import Input from '../forms/Input'
+import Input from '../formElements/Input'
 
 const Form = ({ handleLogin }) => {
 	const [username, setUsername] = useState('')

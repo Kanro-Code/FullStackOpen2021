@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
-const bcrypt = require('bcrypt')
 const app = require('../app')
 const Blog = require('../models/blog')
 const User = require('../models/user')
@@ -8,33 +7,13 @@ const helper = require('./test_helper')
 
 const api = supertest(app)
 
-const createUser = async (username = 'root') => {
-	const passwordHash = await bcrypt.hash('password', 10)
-	const user = new User({
-		username,
-		name: username,
-		passwordHash,
-	})
-	return user.save()
-}
-
-const loginUser = async (user) => {
-	const { username } = user
-	const password = 'password'
-
-	const res = await api
-		.post('/api/login')
-		.send({ username, password })
-		.expect(200)
-		.expect('Content-Type', /application\/json/)
-	return res.body.token
-}
+const baseUrl = '/api/blogs'
 
 beforeEach(async () => {
 	await User.deleteMany({})
 	await Blog.deleteMany({})
 
-	const user = await createUser()
+	const user = await helper.createUser('first user')
 
 	const promises = helper.mockupBlogs().map((n) => {
 		const blog = new Blog({ ...n, user })
@@ -46,13 +25,13 @@ beforeEach(async () => {
 
 describe('fecth all blogs', () => {
 	test('all blogs returned as json', async () => {
-		const res = await api.get('/api/blogs')
+		const res = await api.get(baseUrl)
 
 		expect(res.body).toHaveLength(helper.mockupBlogs().length)
 	}, 100000)
 
 	test('a specficic blog is within the returned blogs', async () => {
-		const res = await api.get('/api/blogs')
+		const res = await api.get(baseUrl)
 
 		const titles = res.body.map((n) => n.title)
 		expect(titles).toContain('Go To Statement Considered Harmful')
@@ -65,7 +44,7 @@ describe('viewing specific single blog', () => {
 		const blog = blogs[0]
 
 		const res = await api
-			.get(`/api/blogs/${blog.id}`)
+			.get(`${baseUrl}/${blog.id}`)
 			.expect(200)
 			.expect('Content-Type', /application\/json/)
 
@@ -76,14 +55,14 @@ describe('viewing specific single blog', () => {
 	test('fails with 404 if blog does not exist', async () => {
 		const id = await helper.nonExisitingId()
 		await api
-			.get(`/api/blogs/${id}`)
+			.get(`${baseUrl}/${id}`)
 			.expect(404)
 	}, 10000)
 
 	test('fails with 400 if id is invalid', async () => {
 		const id = '5a3d5da59070081a82a35'
 		await api
-			.get(`/api/blogs/${id}`)
+			.get(`${baseUrl}/${id}`)
 			.expect(400)
 	})
 })
@@ -92,7 +71,7 @@ describe('post single blog', () => {
 	test('add a blog, and verify that its added', async () => {
 		const blogsAtStart = await helper.blogsInDb()
 		const usersAtStart = await helper.usersInDb()
-		const token = await loginUser(usersAtStart[0])
+		const token = await helper.loginUser(usersAtStart[0], api)
 
 		const blogToAdd = {
 			title: 'Single Test',
@@ -102,7 +81,7 @@ describe('post single blog', () => {
 		}
 
 		const res = await api
-			.post('/api/blogs')
+			.post(baseUrl)
 			.set({ Authorization: `Bearer ${token}` })
 			.send(blogToAdd)
 			.expect(201)
@@ -125,7 +104,7 @@ describe('post single blog', () => {
 		const blog = blogsAtStart[0]
 
 		await api
-			.post('/api/blogs')
+			.post(baseUrl)
 			.send(blog)
 			.expect(401)
 			.expect('Content-Type', /application\/json/)
@@ -136,7 +115,7 @@ describe('post single blog', () => {
 
 	test('add a blog with missing likes properties, default to 0', async () => {
 		const users = await helper.usersInDb()
-		const token = await loginUser(users[0])
+		const token = await helper.loginUser(users[0], api)
 		const blog = {
 			title: 'Missing likes count',
 			author: 'bing',
@@ -144,7 +123,7 @@ describe('post single blog', () => {
 		}
 
 		const res = await api
-			.post('/api/blogs')
+			.post(baseUrl)
 			.set({ Authorization: `Bearer ${token}` })
 			.send(blog)
 			.expect(201)
@@ -155,12 +134,12 @@ describe('post single blog', () => {
 
 	test('reject a blog with missing url or title', async () => {
 		const users = await helper.usersInDb()
-		const token = await loginUser(users[0])
+		const token = await helper.loginUser(users[0], api)
 		const blogMissingUrl = {
 			title: 'Missing url',
 		}
 		let res = await api
-			.post('/api/blogs')
+			.post(baseUrl)
 			.set({ Authorization: `Bearer ${token}` })
 			.send(blogMissingUrl)
 			.expect(400)
@@ -172,7 +151,7 @@ describe('post single blog', () => {
 		}
 
 		res = await api
-			.post('/api/blogs')
+			.post(baseUrl)
 			.set({ Authorization: `Bearer ${token}` })
 			.send(blogMissingTitle)
 			.expect(400)
@@ -186,7 +165,7 @@ describe('post single blog', () => {
 
 	test('check if blog._id is hidden and replaced by blog.id', async () => {
 		const res = await api
-			.get('/api/blogs')
+			.get(baseUrl)
 			.expect(200)
 			.expect('Content-Type', /application\/json/)
 
@@ -198,12 +177,12 @@ describe('post single blog', () => {
 describe('deletion of a single blog', () => {
 	test('succeeds with status code 204 if id is valid', async () => {
 		const users = await helper.usersInDb()
-		const token = await loginUser(users[0])
+		const token = await helper.loginUser(users[0], api)
 		const blogsAtStart = await helper.blogsInDb()
 		const blogToRemove = blogsAtStart[0]
 
 		await api
-			.delete(`/api/blogs/${blogToRemove.id}`)
+			.delete(`${baseUrl}/${blogToRemove.id}`)
 			.set({ Authorization: `Bearer ${token}` })
 			.expect(204)
 
@@ -220,12 +199,28 @@ describe('deletion of a single blog', () => {
 		const blogToRemove = blogsAtStart[0]
 
 		await api
-			.delete(`/api/blogs/${blogToRemove.id}`)
+			.delete(`${baseUrl}/${blogToRemove.id}`)
 			.expect(401)
 
 		const blogsAtEnd = await helper.blogsInDb()
 		expect(blogsAtEnd).toHaveLength(blogsAtStart.length)
 	}, 100000)
+
+	test('fails if wrong user tries to delete', async () => {
+		const blogsAtStart = await helper.blogsInDb()
+		const blogToRemove = blogsAtStart[0]
+
+		const newUser = await helper.createUser('new user')
+		const token = await helper.loginUser(newUser, api)
+
+		await api
+			.delete(`${baseUrl}/${blogToRemove.id}`)
+			.set({ Authorization: `Bearer ${token}` })
+			.expect(403)
+
+		const blogsAtEnd = await helper.blogsInDb()
+		expect(blogsAtEnd).toHaveLength(blogsAtStart.length)
+	})
 })
 
 describe('updating of a single blog', () => {
@@ -239,7 +234,7 @@ describe('updating of a single blog', () => {
 		blogToUpdate.likes += 1
 
 		const res = await api
-			.put(`/api/blogs/${blogToUpdate.id}`)
+			.put(`${baseUrl}/${blogToUpdate.id}`)
 			.send(blogToUpdate)
 			.expect(200)
 
@@ -255,7 +250,7 @@ describe('updating of a single blog', () => {
 		blogToUpdate.likes += 1
 
 		const res = await api
-			.put(`/api/blogs/${blogToUpdate.id}`)
+			.put(`${baseUrl}/${blogToUpdate.id}`)
 			.send(blogToUpdate)
 			.expect(200)
 

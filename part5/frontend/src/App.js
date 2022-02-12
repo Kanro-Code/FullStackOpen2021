@@ -26,6 +26,7 @@ const App = () => {
 
 	const handleLogin = async (username, password) => {
 		const user = await loginService.login(username, password)
+		console.log(user)
 		setUser(user)
 		const userJSON = JSON.stringify(user)
 		window.localStorage.setItem('authUser', userJSON)
@@ -46,14 +47,16 @@ const App = () => {
 	}
 
 	const handleNewBlog = async (newBlog) => {
-		console.log(formToggleRef)
+		try {
+			const blog = await blogService.addNew(newBlog, user.token)
 
-		const blog = await blogService.addNew(newBlog, user.token)
-		
-		setBlogs([...blogs, blog])
-		formToggleRef.current.toggleVisibility()
-
-		return blog
+			setBlogs([...blogs, blog])
+			formToggleRef.current.toggleVisibility()
+	
+			return blog
+		} catch(e) {
+			console.error(e)
+		}
 	}
 
 	const handleLike = async (id) => {
@@ -63,7 +66,6 @@ const App = () => {
 	}
 
 	const sortBlogs = () => {
-		console.log('Sorting?')
 		return blogs.sort((a,b) => a.likes < b.likes)
 	}
 
@@ -81,6 +83,7 @@ const App = () => {
 				handleDelete={handleDelete}
 				handleLike={handleLike}
 				ref={formToggleRef}
+				user={user}
 			/> }
 		</div>
 	)

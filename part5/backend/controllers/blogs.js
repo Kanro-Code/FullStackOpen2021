@@ -48,9 +48,9 @@ blogsRouter.put('/like/:id', async (req, res) => {
 
 	const blog = await Blog
 		.findOneAndUpdate(
-			{ _id :id },
-			{ $inc: { 'likes': 1} },
-			{ new: true }
+			{ _id: id },
+			{ $inc: { likes: 1 } },
+			{ new: true },
 		)
 	res.json(blog)
 })

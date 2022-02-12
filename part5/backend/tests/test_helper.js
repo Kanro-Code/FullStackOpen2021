@@ -1,3 +1,5 @@
+const bcrypt = require('bcrypt')
+const { application } = require('express')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
@@ -76,10 +78,36 @@ const usersInDb = async () => {
 	return (await users).map((n) => n.toJSON())
 }
 
+const createUser = async (username = 'root') => {
+	const passwordHash = await bcrypt.hash('password', 10)
+	const user = new User({
+		username,
+		name: username,
+		passwordHash,
+	})
+
+	return user.save()
+}
+
+const loginUser = async (user, api) => {
+	const { username } = user
+	const password = 'password'
+
+	const res = await api
+		.post('/api/login')
+		.send({ username, password })
+		.expect(200)
+		.expect('Content-Type', /application\/json/)
+
+	return res.body.token
+}
+
 module.exports = {
 	mockupBlogs,
 	mockupUsers,
 	nonExisitingId,
 	blogsInDb,
 	usersInDb,
+	createUser,
+	loginUser,
 }
