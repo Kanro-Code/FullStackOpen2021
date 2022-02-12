@@ -62,6 +62,11 @@ const App = () => {
 		setBlogs(newBlogs)
 	}
 
+	const sortBlogs = () => {
+		console.log('Sorting?')
+		return blogs.sort((a,b) => a.likes < b.likes)
+	}
+
 	return (
 		<div>
 			<h2>blogs</h2>
@@ -71,7 +76,7 @@ const App = () => {
 				user={user} 
 			/>
 			{ (user !== null) && <Blogs 
-				blogs={blogs} 
+				blogs={sortBlogs()} 
 				handleNewBlog={handleNewBlog} 
 				handleDelete={handleDelete}
 				handleLike={handleLike}
