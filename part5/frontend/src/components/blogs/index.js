@@ -4,7 +4,12 @@ import New from './New'
 import Toggleable from '../Toggleable'
 
 const Blogs = React.forwardRef((props, ref) => {
-	const { blogs, handleNewBlog, handleDelete } = props
+	const { 
+		blogs, 
+		handleNewBlog, 
+		handleDelete,
+		handleLike
+	} = props
 	return (
 		<div>
 			<Toggleable label='Add new blog' state={false} ref={ref}>
@@ -22,6 +27,7 @@ const Blogs = React.forwardRef((props, ref) => {
 								key={b.id}
 								blog={b}
 								handleDelete={handleDelete}
+								handleLike={handleLike}
 							/>
 						)}
 					</ul>

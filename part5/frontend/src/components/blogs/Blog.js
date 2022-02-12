@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-import Toggleable from '../Toggleable'
 
-const Blog = ({ blog, handleDelete }) => {
+const Blog = ({ blog, handleDelete, handleLike }) => {
 	const [viewDetails, setViewDetails] = useState(false)
 
 	const toggleView = () => {
@@ -10,7 +9,7 @@ const Blog = ({ blog, handleDelete }) => {
 
 	const clickDelete = (id) => {
 		if (window.confirm('Are you sure you want to delete this blog?')) {
-			// handleDelete(id)
+			handleDelete(id)
 		}
 	}
 
@@ -28,7 +27,8 @@ const Blog = ({ blog, handleDelete }) => {
 			{(viewDetails) && 
 				<>
 					{blog.url} <br />
-					likes: {blog.likes} <button>like</button>
+					likes: {blog.likes} 
+					<button onClick={() => handleLike(blog.id)}>like</button>
 					<br />
 					<button onClick={() => clickDelete(blog.id)}>Delete</button>
 				</>

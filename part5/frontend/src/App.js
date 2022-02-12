@@ -49,10 +49,17 @@ const App = () => {
 		console.log(formToggleRef)
 
 		const blog = await blogService.addNew(newBlog, user.token)
+		
 		setBlogs([...blogs, blog])
 		formToggleRef.current.toggleVisibility()
 
 		return blog
+	}
+
+	const handleLike = async (id) => {
+		const blog = await blogService.like(id)
+		const newBlogs = blogs.map((b) => (b.id !== blog.id) ? b : blog)
+		setBlogs(newBlogs)
 	}
 
 	return (
@@ -67,6 +74,7 @@ const App = () => {
 				blogs={blogs} 
 				handleNewBlog={handleNewBlog} 
 				handleDelete={handleDelete}
+				handleLike={handleLike}
 				ref={formToggleRef}
 			/> }
 		</div>

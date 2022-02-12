@@ -43,6 +43,18 @@ blogsRouter.put('/:id', async (req, res) => {
 	res.json(blog)
 })
 
+blogsRouter.put('/like/:id', async (req, res) => {
+	const { id } = req.params
+
+	const blog = await Blog
+		.findOneAndUpdate(
+			{ _id :id },
+			{ $inc: { 'likes': 1} },
+			{ new: true }
+		)
+	res.json(blog)
+})
+
 blogsRouter.delete('/:id', userExtractor, async (req, res) => {
 	const blog = await Blog.findById(req.params.id)
 	const { user } = req
