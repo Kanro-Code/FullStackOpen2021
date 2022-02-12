@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Blogs from './components/blogs/index'
 import Login from './components/login/index'
 import blogService from './services/blogs'
@@ -7,6 +7,8 @@ import loginService from './services/login'
 const App = () => {
 	const [blogs, setBlogs] = useState([])
 	const [user, setUser] = useState(null)
+
+	const formRef = useRef()
 
 	useEffect(async () => {
 		const blogList = await blogService.getAll()
@@ -44,9 +46,12 @@ const App = () => {
 	}
 
 	const handleNewBlog = async (newBlog) => {
-		const blog = await blogService.addNew(newBlog, user.token)
-		setBlogs([...blogs, blog])
-		return blog
+		formRef.current.toggleVisibility()
+		console.log(formRef)
+
+		// const blog = await blogService.addNew(newBlog, user.token)
+		// setBlogs([...blogs, blog])
+		// return blog
 	}
 
 	return (
@@ -61,6 +66,7 @@ const App = () => {
 				blogs={blogs} 
 				handleNewBlog={handleNewBlog} 
 				handleDelete={handleDelete}
+				ref={formRef}
 			/> }
 		</div>
 	)

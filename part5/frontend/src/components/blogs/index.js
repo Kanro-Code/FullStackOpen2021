@@ -3,9 +3,14 @@ import Blog from './Blog'
 import New from './New'
 import Toggleable from '../Toggleable'
 
-const Blogs = ({ blogs, handleNewBlog, handleDelete }) => (
+const Blogs = ({ 
+	blogs, 
+	handleNewBlog, 
+	handleDelete, 
+	ref 
+}) => (
 	<div>
-		<Toggleable label='Add new blog' state={true}>
+		<Toggleable label='Add new blog' state={false} ref={ref}>
 			<New handleNewBlog={handleNewBlog} />
 		</Toggleable>
 
