@@ -8,11 +8,10 @@ const App = () => {
 	const [blogs, setBlogs] = useState([])
 	const [user, setUser] = useState(null)
 
-	useEffect(() => {
-		blogService.getAll().then((b) =>
-			setBlogs(b)
-		)	
-	},[])
+	useEffect(async () => {
+		const blogList = await blogService.getAll()
+		setBlogs(blogList)
+	}, [])
 	
 	useEffect(() => {
 		const authUser = window.localStorage.getItem('authUser')
@@ -21,7 +20,7 @@ const App = () => {
 			const user = JSON.parse(authUser)
 			setUser(user)
 		}
-	},[])
+	}, [])
 
 	const handleLogin = async (username, password) => {
 		const user = await loginService.login(username, password)
