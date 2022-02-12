@@ -8,7 +8,7 @@ const App = () => {
 	const [blogs, setBlogs] = useState([])
 	const [user, setUser] = useState(null)
 
-	const formRef = useRef()
+	const formToggleRef = useRef()
 
 	useEffect(async () => {
 		const blogList = await blogService.getAll()
@@ -46,12 +46,13 @@ const App = () => {
 	}
 
 	const handleNewBlog = async (newBlog) => {
-		formRef.current.toggleVisibility()
-		console.log(formRef)
+		console.log(formToggleRef)
 
-		// const blog = await blogService.addNew(newBlog, user.token)
-		// setBlogs([...blogs, blog])
-		// return blog
+		const blog = await blogService.addNew(newBlog, user.token)
+		setBlogs([...blogs, blog])
+		formToggleRef.current.toggleVisibility()
+
+		return blog
 	}
 
 	return (
@@ -66,7 +67,7 @@ const App = () => {
 				blogs={blogs} 
 				handleNewBlog={handleNewBlog} 
 				handleDelete={handleDelete}
-				ref={formRef}
+				ref={formToggleRef}
 			/> }
 		</div>
 	)
