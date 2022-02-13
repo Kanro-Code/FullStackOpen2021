@@ -26,10 +26,10 @@ const Blog = ({ blog, handleDelete, handleLike, user }) => {
 				{(viewDetails) ? 'hide' : 'show'}
 			</button>
 			<br/>
-			{(viewDetails) && 
+			{(viewDetails) &&
 				<>
 					{blog.url} <br />
-					likes: {blog.likes} 
+					likes: {blog.likes}
 					<button onClick={() => handleLike(blog.id)}>like</button>
 					<br />
 					{(userOwnsBlog) &&

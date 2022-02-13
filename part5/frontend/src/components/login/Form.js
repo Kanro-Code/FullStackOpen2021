@@ -16,17 +16,17 @@ const Form = ({ handleLogin }) => {
 
 	return (
 		<form onSubmit={handleSubmit}>
-			<Input 
+			<Input
 				name="username"
-				type="text" 
-				value={username} 
-				setter={setUsername} 
+				type="text"
+				value={username}
+				setter={setUsername}
 			/>
-			<Input 
+			<Input
 				name="password"
-				type="password" 
-				value={password} 
-				setter={setPassword} 
+				type="password"
+				value={password}
+				setter={setPassword}
 			/>
 			<button type='submit'>Login</button>
 		</form>

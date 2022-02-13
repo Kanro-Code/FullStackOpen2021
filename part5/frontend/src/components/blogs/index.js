@@ -1,19 +1,20 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import Blog from './Blog'
 import New from './New'
 import Toggleable from '../Toggleable'
 
 const Blogs = React.forwardRef((props, ref) => {
-	const { 
-		blogs, 
-		handleNewBlog, 
+	const {
+		blogs,
+		handleNewBlog,
 		handleDelete,
 		handleLike,
 		user,
 	} = props
 	return (
 		<div>
-			<Toggleable label='Add new blog' state={false} ref={ref}>
+			<Toggleable label="Add new blog" state={false} ref={ref}>
 				<New handleNewBlog={handleNewBlog} />
 			</Toggleable>
 
@@ -23,7 +24,7 @@ const Blogs = React.forwardRef((props, ref) => {
 				? <div>No blogs at this time</div>
 				: (
 					<ul>
-						{blogs.map((b) => 
+						{blogs.map((b) => (
 							<Blog
 								key={b.id}
 								blog={b}
@@ -31,13 +32,22 @@ const Blogs = React.forwardRef((props, ref) => {
 								handleLike={handleLike}
 								user={user}
 							/>
-						)}
+						))}
 					</ul>
-				)
-			}
+				)}
 
 		</div>
-	)})
-	
+	)
+})
+
+Blogs.propTypes = {
+	blogs: PropTypes.object.isRequired,
+	handleNewBlog: PropTypes.func.isRequired,
+	handleDelete: PropTypes.func.isRequired,
+	handleLike: PropTypes.func.isRequired,
+	user: PropTypes.object.isRequired,
+}
+
+Blogs.displayName = 'Blogs'
 
 export default Blogs

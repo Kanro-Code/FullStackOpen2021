@@ -14,7 +14,7 @@ const getAll = async (token) => {
 }
 
 const config = (token) => {
-	return { headers: { Authorization: `Bearer ${token}` }}
+	return { headers: { Authorization: `Bearer ${token}` } }
 }
 
 const addNew = async (newBlog, token) => {
@@ -35,11 +35,11 @@ const deleteOne = async (id, token) => {
 	}
 }
 
-const like = async (id, token) => {
+const like = async (id) => {
 	try {
 		const res = await axios.put(`${baseUrl}/like/${id}`)
 		return res.data
-			
+
 	} catch(e) {
 		console.error(e)
 	}

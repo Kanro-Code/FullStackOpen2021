@@ -30,7 +30,8 @@
     "lodash": "^4.17.21",
     "mongoose": "^6.1.8",
     "mongoose-unique-validator": "^2.0.3",
-    "p": "^0.2.0"
+    "p": "^0.2.0",
+    "prop-types": "^15.8.1"
   },
   "jest": {
     "testEnvironment": "node"

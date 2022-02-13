@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Input = ({ name, type, value, setter}) => (
+const Input = ({ name, type, value, setter }) => (
 	<div>
 		{name}:
 		<input

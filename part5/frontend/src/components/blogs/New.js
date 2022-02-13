@@ -24,23 +24,23 @@ const New = ({ handleNewBlog }) => {
 	return (
 		<form onSubmit={handleSubmit}>
 			<h3>Add a new blog</h3>
-			<Input 
-				name="title" 
-				type="text" 
-				value={title} 
-				setter={setTitle} 
+			<Input
+				name="title"
+				type="text"
+				value={title}
+				setter={setTitle}
 			/>
-			<Input 
-				name="author" 
-				type="text" 
-				value={author} 
-				setter={setAuthor} 
+			<Input
+				name="author"
+				type="text"
+				value={author}
+				setter={setAuthor}
 			/>
-			<Input 
-				name="url" 
-				type="text" 
-				value={url} 
-				setter={setUrl} 
+			<Input
+				name="url"
+				type="text"
+				value={url}
+				setter={setUrl}
 			/>
 			<button type="submit">Add new</button>
 		</form>
