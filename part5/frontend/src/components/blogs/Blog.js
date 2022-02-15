@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
+import Button from '../formElements/Button'
 
-const Blog = ({ blog, handleDelete, handleLike, user }) => {
+function Blog(props) {
+	const { blog, handleDelete, handleLike, user } = props
 	const [viewDetails, setViewDetails] = useState(false)
 
 	const toggleView = () => {
@@ -8,6 +10,7 @@ const Blog = ({ blog, handleDelete, handleLike, user }) => {
 	}
 
 	const clickDelete = (id) => {
+		// eslint-disable-next-line no-alert
 		if (window.confirm('Are you sure you want to delete this blog?')) {
 			handleDelete(id)
 		}
@@ -17,26 +20,29 @@ const Blog = ({ blog, handleDelete, handleLike, user }) => {
 
 	const style = {
 		padding: '10px',
-		border: '1px solid black'
+		border: '1px solid black',
 	}
+
+	const details = (n) => (
+		<div>
+			{n.url}
+			<br />
+			{`likes: ${n.likes}`}
+			<Button text="like" func={() => handleLike(n.id)} />
+
+			{(userOwnsBlog)
+			&& <Button text="delete" func={() => clickDelete(n.id)} />}
+		</div>
+	)
+
 	return (
 		<div style={style}>
-			{blog.title} - {blog.author}
-			<button onClick={toggleView}>
+			{`${blog.title} - ${blog.author}`}
+			<button onClick={toggleView} type="button">
 				{(viewDetails) ? 'hide' : 'show'}
 			</button>
-			<br/>
-			{(viewDetails) &&
-				<>
-					{blog.url} <br />
-					likes: {blog.likes}
-					<button onClick={() => handleLike(blog.id)}>like</button>
-					<br />
-					{(userOwnsBlog) &&
-						<button onClick={() => clickDelete(blog.id)}>Delete</button>
-					}
-				</>
-			}
+			<br />
+			{(viewDetails) && details(blog)}
 		</div>
 	)
 }

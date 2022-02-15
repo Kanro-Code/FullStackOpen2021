@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Input from '../formElements/Input'
 
-const New = ({ handleNewBlog }) => {
+function New({ handleNewBlog }) {
 	const [title, setTitle] = useState('')
 	const [author, setAuthor] = useState('')
 	const [url, setUrl] = useState('')

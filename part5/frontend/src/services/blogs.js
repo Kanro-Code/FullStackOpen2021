@@ -1,47 +1,50 @@
 import axios from 'axios'
+
 const baseUrl = '/api/blogs'
 
-const getAll = async (token) => {
+async function getAll(token) {
 	const config = {
-		headers: { Authorization: `Bearer ${token}` }
+		headers: { Authorization: `Bearer ${token}` },
 	}
+
 	try {
 		const res = await axios.get(baseUrl, config)
 		return res.data
-	} catch(e) {
+	} catch (e) {
 		console.error(e)
+		return null
 	}
 }
 
-const config = (token) => {
-	return { headers: { Authorization: `Bearer ${token}` } }
-}
+const config = (token) => ({ headers: { Authorization: `Bearer ${token}` } })
 
-const addNew = async (newBlog, token) => {
+async function addNew(newBlog, token) {
 	try {
 		const res = await axios.post(baseUrl, newBlog, config(token))
 		return res.data
-	} catch(e) {
+	} catch (e) {
 		console.error(e)
+		return null
 	}
 }
 
-const deleteOne = async (id, token) => {
+async function deleteOne(id, token) {
 	try {
-		await axios.delete(baseUrl + `/${id}`, config(token))
+		await axios.delete(`${baseUrl}/${id}`, config(token))
 		return true
-	} catch(e) {
+	} catch (e) {
 		console.error(e)
+		return null
 	}
 }
 
-const like = async (id) => {
+async function like(id) {
 	try {
 		const res = await axios.put(`${baseUrl}/like/${id}`)
 		return res.data
-
-	} catch(e) {
+	} catch (e) {
 		console.error(e)
+		return null
 	}
 }
 

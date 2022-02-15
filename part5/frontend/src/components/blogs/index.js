@@ -5,13 +5,7 @@ import New from './New'
 import Toggleable from '../Toggleable'
 
 const Blogs = React.forwardRef((props, ref) => {
-	const {
-		blogs,
-		handleNewBlog,
-		handleDelete,
-		handleLike,
-		user,
-	} = props
+	const { blogs, handleNewBlog, handleDelete, handleLike, user } = props
 	return (
 		<div>
 			<Toggleable label="Add new blog" state={false} ref={ref}>
@@ -41,11 +35,22 @@ const Blogs = React.forwardRef((props, ref) => {
 })
 
 Blogs.propTypes = {
-	blogs: PropTypes.object.isRequired,
+	blogs: PropTypes.arrayOf(
+		PropTypes.shape({
+			id: PropTypes.string.isRequired,
+			title: PropTypes.string.isRequired,
+			author: PropTypes.string.isRequired,
+			url: PropTypes.string.isRequired,
+			likes: PropTypes.number.isRequired,
+		}),
+	).isRequired,
 	handleNewBlog: PropTypes.func.isRequired,
 	handleDelete: PropTypes.func.isRequired,
 	handleLike: PropTypes.func.isRequired,
-	user: PropTypes.object.isRequired,
+	user: PropTypes.shape({
+		username: PropTypes.string.isRequired,
+		name: PropTypes.string.isRequired,
+	}).isRequired,
 }
 
 Blogs.displayName = 'Blogs'

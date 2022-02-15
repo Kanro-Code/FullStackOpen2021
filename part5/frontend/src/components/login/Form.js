@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Input from '../formElements/Input'
 
-const Form = ({ handleLogin }) => {
+function Form({ handleLogin }) {
 	const [username, setUsername] = useState('')
 	const [password, setPassword] = useState('')
 
@@ -28,10 +28,9 @@ const Form = ({ handleLogin }) => {
 				value={password}
 				setter={setPassword}
 			/>
-			<button type='submit'>Login</button>
+			<button type="submit">Login</button>
 		</form>
 	)
-
 }
 
 export default Form

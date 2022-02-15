@@ -1,10 +1,12 @@
 import React from 'react'
+import Button from '../formElements/Button'
 
-const Welcome = ({ handleLogout, user }) => (
-	<p>
-		Welcome {user.name}
-		<button onClick={() => handleLogout()}>Logout</button>
-	</p>
-)
-
+function Welcome({ handleLogout, user }) {
+	return (
+		<p>
+			{`Welcome ${user.name}`}
+			<Button text="Logout" func={() => handleLogout()} />
+		</p>
+	)
+}
 export default Welcome
