@@ -8,7 +8,7 @@ module.exports = {
 	},
 	extends: [
 		'eslint:recommended',
-		'plugin:react/recommended',
+		// 'plugin:react/recommended',
 		'airbnb',
 		'airbnb/hooks',
 	],
@@ -41,6 +41,15 @@ module.exports = {
 		'no-trailing-spaces': 'error',
 		'object-curly-spacing': [
 			'error', 'always',
+		],
+		'object-curly-newline': [
+			'error',
+			{
+				ObjectExpression: { consistent: true, multiline: true },
+				ObjectPattern: { consistent: true, multiline: true },
+				ImportDeclaration: 'never',
+				ExportDeclaration: { multiline: true, minProperties: 3 },
+			},
 		],
 		'arrow-spacing': [
 			'error', { before: true, after: true },
