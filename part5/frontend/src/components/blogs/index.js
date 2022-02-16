@@ -41,11 +41,19 @@ const Blogs = React.forwardRef((props, ref) => {
 })
 
 Blogs.propTypes = {
-	blogs: PropTypes.object.isRequired,
+	blogs: PropTypes.arrayOf(
+		PropTypes.shape({
+			url: PropTypes.string.isRequired,
+		}),
+	).isRequired,
 	handleNewBlog: PropTypes.func.isRequired,
 	handleDelete: PropTypes.func.isRequired,
 	handleLike: PropTypes.func.isRequired,
-	user: PropTypes.object.isRequired,
+	user: PropTypes.shape({
+		username: PropTypes.string.isRequired,
+		name: PropTypes.string.isRequired,
+		id: PropTypes.string.isRequired,
+	}).isRequired,
 }
 
 Blogs.displayName = 'Blogs'

@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-import Input from '../formElements/Input'
 
-const Form = ({ handleLogin }) => {
+function Form({ handleLogin }) {
 	const [username, setUsername] = useState('')
 	const [password, setPassword] = useState('')
 
@@ -16,22 +15,20 @@ const Form = ({ handleLogin }) => {
 
 	return (
 		<form onSubmit={handleSubmit}>
-			<Input
-				name="username"
+			Username:
+			<input
 				type="text"
 				value={username}
-				setter={setUsername}
+				onChange={({ target }) => setUsername(target.value)}
 			/>
-			<Input
-				name="password"
-				type="password"
+			<input
+				type="text"
 				value={password}
-				setter={setPassword}
+				onChange={({ target }) => setPassword(target.value)}
 			/>
-			<button type='submit'>Login</button>
+			<button type="submit">Login</button>
 		</form>
 	)
-
 }
 
 export default Form

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const Blog = ({ blog, handleDelete, handleLike, user }) => {
+function Blog({ blog, handleDelete, handleLike, user }){
 	const [viewDetails, setViewDetails] = useState(false)
 
 	const toggleView = () => {
