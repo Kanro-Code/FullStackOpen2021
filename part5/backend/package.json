@@ -1,39 +1,30 @@
 {
-  "name": "part4",
-  "version": "0.0.1",
+  "name": "backend",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js",
     "lint": "eslint .",
-    "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
-    "build:ui": "rm -rf build && cd ../frontend/ && npm run build && cp -r build ../backend"
+    "test": "cross-env NODE_ENV=test jest --verbose --runInBand --forceExit"
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "cross-env": "^7.0.3",
-    "eslint": "^8.7.0",
-    "eslint-config-airbnb": "^19.0.4",
-    "jest": "^27.4.7",
-    "nodemon": "^2.0.15",
-    "supertest": "^6.2.2"
-  },
   "dependencies": {
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
-    "dotenv": "^14.3.2",
+    "dotenv": "^14.3.0",
     "express": "^4.17.2",
     "express-async-errors": "^3.1.1",
+    "jest": "^27.4.7",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
-    "mongoose": "^6.1.8",
-    "mongoose-unique-validator": "^2.0.3",
-    "p": "^0.2.0",
-    "prop-types": "^15.8.1"
+    "mongoose": "^6.1.8"
   },
-  "jest": {
-    "testEnvironment": "node"
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "nodemon": "^2.0.15",
+    "supertest": "^6.2.2"
   }
 }

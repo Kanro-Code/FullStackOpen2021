@@ -1,48 +1,32 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
-const loginRouter = require('express').Router()
+const router = require('express').Router()
 const User = require('../models/user')
-const config = require('../utils/config')
-const logger = require('../utils/logger')
 
-loginRouter.post('/', async (req, res) => {
-	const { body } = req
+router.post('/', async (request, response) => {
+  const { username, password } = request.body
 
-	logger.info(`User: ${body.username} attempt logging in.`)
+  const user = await User.findOne({ username })
+  const passwordCorrect = user === null
+    ? false
+    : await bcrypt.compare(password, user.passwordHash)
 
-	const user = await User.findOne({ username: body.username })
-	const passwordCorrect = (user === null)
-		? false
-		: await bcrypt.compare(body.password, user.passwordHash)
+  if (!(user && passwordCorrect)) {
+    return response.status(401).json({
+      error: 'invalid username or password'
+    })
+  }
 
-	if (!(user && passwordCorrect)) {
-		logger.info(`User: ${body.username} failed - invalid credentials`)
-		return res.status(401).json({
-			error: 'invalid username or password',
-		})
-	}
+  const userForToken = {
+    username: user.username,
+    id: user._id,
+  }
 
-	const userForToken = {
-		username: user.username,
-		id: user._id,
-	}
+  const token = jwt.sign(userForToken, process.env.SECRET)
 
-	const token = jwt.sign(
-		userForToken,
-		config.SECRET,
-		// { expiresIn: 60 * 60 },
-	)
-
-	logger.info(`User ${body.username} logged in successfully`)
-
-	res
-		.status(200)
-		.send({
-			token,
-			id: user._id,
-			username: user.username,
-			name: user.name,
-		})
+  response
+    .status(200)
+    .send({ token, username: user.username, name: user.name })
 })
 
-module.exports = loginRouter
+module.exports = router
