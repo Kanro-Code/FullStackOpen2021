@@ -17,7 +17,7 @@ module.exports = {
 		semi: ['error', 'never'],
 		'no-console': 0,
 		'no-tabs': 0,
-		'no-param-reassign': 1,
+		// 'no-param-reassign': 1,
 		'no-underscore-dangle': 0,
 		'object-curly-newline': [
 			'error',
