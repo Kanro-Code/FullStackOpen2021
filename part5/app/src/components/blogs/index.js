@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import blogService from '../services/blogs'
-import Blog from './Blog'
+import blogService from '../../services/blogs'
+import New from './New'
+import Single from './Single'
 
 function Blogs() {
 	const [blogs, setBlogs] = useState([])
@@ -14,10 +15,15 @@ function Blogs() {
 			.catch((e) => console.log(e))
 	}, [])
 
+	const handleNewBlog = (blog) => {
+		console.log(blog)
+	}
+
 	return (
 		<div>
+			<New handleNewBlog={handleNewBlog} />
 			{blogs.map((b) => (
-				<Blog key={b.id} blog={b} />
+				<Single key={b.id} blog={b} />
 			))}
 		</div>
 	)

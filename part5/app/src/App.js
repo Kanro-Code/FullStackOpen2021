@@ -1,4 +1,4 @@
-import Blogs from './components/Blogs'
+import Blogs from './components/blogs/index'
 import Login from './components/Login'
 
 function App() {

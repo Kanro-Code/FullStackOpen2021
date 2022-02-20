@@ -1,4 +1,4 @@
-function Blog({ blog }) {
+function Single({ blog }) {
 	return (
 		<div>
 			{`${blog.title} - ${blog.author}`}
@@ -6,4 +6,4 @@ function Blog({ blog }) {
 	)
 }
 
-export default Blog
+export default Single
