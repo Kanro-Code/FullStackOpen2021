@@ -2,21 +2,23 @@ import React, { useState, useEffect } from 'react'
 import blogService from '../services/blogs'
 import Blog from './Blog'
 
-const Blogs = ({blog}) => {
+function Blogs() {
 	const [blogs, setBlogs] = useState([])
 
-  useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
-  }, [])
-
+	useEffect(() => {
+		const fetch = async () => {
+			const fetchedBlogs = await blogService.getAll()
+			setBlogs(fetchedBlogs)
+		}
+		fetch()
+			.catch((e) => console.log(e))
+	}, [])
 
 	return (
 		<div>
-			{blogs.map(blog =>
-				<Blog key={blog.id} blog={blog} />
-			)}
+			{blogs.map((b) => (
+				<Blog key={b.id} blog={b} />
+			))}
 		</div>
 	)
 }

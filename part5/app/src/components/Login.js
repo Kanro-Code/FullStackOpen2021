@@ -1,7 +1,7 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import LoginService from '../services/login'
 
-const Login = () => {
+function Login() {
 	const [username, setUsername] = useState('')
 	const [password, setPassword] = useState('')
 	const [user, setUser] = useState(null)
@@ -19,18 +19,18 @@ const Login = () => {
 			setUser(loggedUser)
 
 			console.log(loggedUser)
-		} catch (e) {
-			console.error(e)
+		} catch (err) {
+			console.error(err)
 		}
 	}
 
-	return (user === null) 
+	return (user === null)
 		? (
 			<form onSubmit={handleLogin}>
 				<h2>Log in to application</h2>
 				<div>
 					Username:
-					<input 
+					<input
 						type="text"
 						value={username}
 						name="username"
@@ -44,7 +44,7 @@ const Login = () => {
 						value={password}
 						name="password"
 						onChange={({ target }) => setPassword(target.value)}
-					/> 
+					/>
 				</div>
 				<button type="submit">Login</button>
 			</form>
@@ -53,7 +53,7 @@ const Login = () => {
 			<div>
 				{`${user.name} logged in`}
 			</div>
-		) 
+		)
 }
 
 export default Login
