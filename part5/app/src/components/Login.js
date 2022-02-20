@@ -1,10 +1,23 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import BlogService from '../services/blogs'
 import LoginService from '../services/login'
 
 function Login() {
 	const [username, setUsername] = useState('')
 	const [password, setPassword] = useState('')
 	const [user, setUser] = useState(null)
+
+	useEffect(() => {
+		const loggedUserJSON = window.localStorage
+			.getItem('loggedUser')
+
+		if (loggedUserJSON !== null) {
+			console.log(loggedUserJSON)
+			const loggedUser = JSON.parse(loggedUserJSON)
+			BlogService.setToken(loggedUser.token)
+			setUser(loggedUser)
+		}
+	}, [])
 
 	const handleLogin = async (e) => {
 		e.preventDefault()
@@ -16,12 +29,24 @@ function Login() {
 			})
 			setUsername('')
 			setPassword('')
-			setUser(loggedUser)
 
-			console.log(loggedUser)
+			setUser(loggedUser)
+			BlogService.setToken(loggedUser.token)
+
+			window.localStorage.setItem(
+				'loggedUser',
+				JSON.stringify(loggedUser),
+			)
 		} catch (err) {
 			console.error(err)
 		}
+	}
+
+	const handleLogout = () => {
+		console.log('Logging out')
+		setUser(null)
+		BlogService.setToken(null)
+		window.localStorage.removeItem('loggedUser')
 	}
 
 	return (user === null)
@@ -52,6 +77,12 @@ function Login() {
 		: (
 			<div>
 				{`${user.name} logged in`}
+				<button
+					type="button"
+					onClick={handleLogout}
+				>
+					Logout
+				</button>
 			</div>
 		)
 }
