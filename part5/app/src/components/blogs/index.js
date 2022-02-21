@@ -22,7 +22,7 @@ function Blogs({ addNotification }) {
 		try {
 			const newBlog = await blogService.create(blog)
 			setBlogs([...blogs, newBlog])
-			addNotification('succes', 'Successfully added a blog!')
+			addNotification('succes', `New Blog: ${newBlog.title} by ${newBlog.author}`)
 		} catch (e) {
 			console.log('Something went wrong adding a blog', e)
 			addNotification('error', e.message)
