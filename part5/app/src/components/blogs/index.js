@@ -3,7 +3,7 @@ import blogService from '../../services/blogs'
 import New from './New'
 import Single from './Single'
 
-function Blogs() {
+function Blogs({ addNotification }) {
 	const [blogs, setBlogs] = useState([])
 
 	useEffect(() => {
@@ -11,12 +11,22 @@ function Blogs() {
 			const fetchedBlogs = await blogService.getAll()
 			setBlogs(fetchedBlogs)
 		}
-		fetch()
-			.catch((e) => console.log(e))
+		try {
+			fetch()
+		} catch (e) {
+			console.error(e)
+		}
 	}, [])
 
-	const handleNewBlog = (blog) => {
-		console.log(blog)
+	const handleNewBlog = async (blog) => {
+		try {
+			const newBlog = await blogService.create(blog)
+			setBlogs([...blogs, newBlog])
+			addNotification('succes', 'Successfully added a blog!')
+		} catch (e) {
+			console.log('Something went wrong adding a blog', e)
+			addNotification('error', e.message)
+		}
 	}
 
 	return (

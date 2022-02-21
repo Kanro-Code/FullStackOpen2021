@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import BlogService from '../services/blogs'
 import LoginService from '../services/login'
 
-function Login() {
+function Login({ addNotification }) {
 	const [username, setUsername] = useState('')
 	const [password, setPassword] = useState('')
 	const [user, setUser] = useState(null)
@@ -12,7 +12,6 @@ function Login() {
 			.getItem('loggedUser')
 
 		if (loggedUserJSON !== null) {
-			console.log(loggedUserJSON)
 			const loggedUser = JSON.parse(loggedUserJSON)
 			BlogService.setToken(loggedUser.token)
 			setUser(loggedUser)
@@ -39,6 +38,7 @@ function Login() {
 			)
 		} catch (err) {
 			console.error(err)
+			addNotification('error', 'Wrong username or password')
 		}
 	}
 

@@ -5,8 +5,20 @@ function New({ handleNewBlog }) {
 	const [author, setAuthor] = useState('')
 	const [url, setUrl] = useState('')
 
+	const handleSubmit = (e) => {
+		e.preventDefault()
+		handleNewBlog({
+			title,
+			author,
+			url,
+		})
+		setTitle('')
+		setAuthor('')
+		setUrl('')
+	}
+
 	return (
-		<form onSubmit={handleNewBlog}>
+		<form onSubmit={handleSubmit}>
 			Title:
 			<input
 				type="text"
@@ -30,6 +42,9 @@ function New({ handleNewBlog }) {
 				onChange={({ target }) => setUrl(target.value)}
 			/>
 			<br />
+			<button type="submit">
+				Create
+			</button>
 		</form>
 	)
 }

@@ -1,7 +1,14 @@
-import React, { useState } from 'react'
+function Notification({ notification }) {
+	const { type, message } = notification
 
-const Notification = () => {
-	const [notification, setNotification] = useState([])
+	return (message)
+		? (
+			<div className={type}>
+				<br />
+				<em>{message}</em>
+			</div>
+		)
+		: null
 }
 
 export default Notification
