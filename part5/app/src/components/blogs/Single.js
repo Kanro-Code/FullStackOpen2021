@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 
 function Single({
 	blog,
@@ -64,6 +65,21 @@ function Single({
 
 		</div>
 	)
+}
+
+Single.propTypes = {
+	blog: PropTypes.shape({
+		title: PropTypes.string.isRequired,
+		url: PropTypes.string.isRequired,
+		author: PropTypes.string.isRequired,
+		user: PropTypes.shape({
+			username: PropTypes.string.isRequired,
+			name: PropTypes.string.isRequired,
+			id: PropTypes.string.isRequired,
+		}),
+	}).isRequired,
+	handleLike: PropTypes.func.isRequired,
+	handleDelete: PropTypes.func.isRequired,
 }
 
 export default Single

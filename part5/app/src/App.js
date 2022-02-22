@@ -17,7 +17,9 @@ function App() {
 	return (
 		<div>
 			<h2>Blogs</h2>
-			<Notification notification={notification} />
+			{(Object.entries(notification).length > 0) && (
+				<Notification notification={notification} />
+			)}
 			<Login
 				addNotification={addNotification}
 				user={user}

@@ -18,10 +18,13 @@ router.post('/', async (req, res) => {
 	const { user } = req
 	const blog = new Blog({ ...req.body, user: user.id })
 
-	const savedBlog = await blog.save()
+	const savedBlog = await blog
+		.save()
 
 	user.blogs = user.blogs.concat(savedBlog._id)
 	await user.save()
+
+	await savedBlog.populate('user', { username: 1, name: 1 })
 
 	res.status(201).json(savedBlog)
 })

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import blogService from '../../services/blogs'
 import New from './New'
 import Single from './Single'
@@ -70,6 +71,10 @@ function Blogs({ addNotification, user }) {
 			))}
 		</div>
 	)
+}
+
+Blogs.propTypes = {
+	addNotification: PropTypes.func.isRequired,
 }
 
 export default Blogs
