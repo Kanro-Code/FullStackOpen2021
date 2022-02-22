@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import BlogService from '../services/blogs'
-import LoginService from '../services/login'
+import blogService from '../services/blogs'
+import loginService from '../services/login'
 
 function Login({ addNotification, user, setUser }) {
 	const [username, setUsername] = useState('')
@@ -12,7 +12,7 @@ function Login({ addNotification, user, setUser }) {
 
 		if (loggedUserJSON !== null) {
 			const loggedUser = JSON.parse(loggedUserJSON)
-			BlogService.setToken(loggedUser.token)
+			blogService.setToken(loggedUser.token)
 			setUser(loggedUser)
 		}
 	}, [setUser])
@@ -22,14 +22,14 @@ function Login({ addNotification, user, setUser }) {
 		console.log(`Logging in with ${username}-${password}`)
 
 		try {
-			const loggedUser = await LoginService.login({
+			const loggedUser = await loginService.login({
 				username, password,
 			})
 			setUsername('')
 			setPassword('')
 
 			setUser(loggedUser)
-			BlogService.setToken(loggedUser.token)
+			blogService.setToken(loggedUser.token)
 
 			window.localStorage.setItem(
 				'loggedUser',
@@ -45,7 +45,7 @@ function Login({ addNotification, user, setUser }) {
 
 	const handleLogout = () => {
 		setUser(null)
-		BlogService.setToken(null)
+		blogService.setToken(null)
 		window.localStorage.removeItem('loggedUser')
 
 		addNotification('succes', 'Logged out!')

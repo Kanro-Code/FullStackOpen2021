@@ -24,7 +24,10 @@ function App() {
 				setUser={setUser}
 			/>
 			{(user) && (
-				<Blogs addNotification={addNotification} />
+				<Blogs
+					addNotification={addNotification}
+					user={user}
+				/>
 			)}
 		</div>
 	)

@@ -33,11 +33,19 @@ const like = async (id) => {
 	return res.data
 }
 
+const remove = async (id) => {
+	const res = await axios
+		.delete(`${baseUrl}/${id}`, config)
+
+	return res.data
+}
+
 const BlogService = {
 	getAll,
 	setToken,
 	create,
 	like,
+	remove,
 }
 
 export default BlogService

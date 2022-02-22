@@ -1,6 +1,11 @@
 import React, { useState } from 'react'
 
-function Single({ blog, handleLike }) {
+function Single({
+	blog,
+	handleLike,
+	handleDelete,
+	user,
+}) {
 	const [detailsShown, setDetailsShown] = useState(false)
 	const blogStyle = {
 		paddingTop: 10,
@@ -14,7 +19,14 @@ function Single({ blog, handleLike }) {
 		setDetailsShown(!detailsShown)
 	}
 
-	const blogDetails = ({ url, likes, user }) => (
+	const confirmDelete = () => {
+		// eslint-disable-next-line no-alert
+		if (window.confirm(`Are you sure you want to delete ${blog.title}?`)) {
+			handleDelete(blog)
+		}
+	}
+
+	const blogDetails = ({ url, likes }) => (
 		<>
 			<br />
 			{url}
@@ -27,7 +39,15 @@ function Single({ blog, handleLike }) {
 				Like
 			</button>
 			<br />
-			{`Added by ${user.name}`}
+			{`Added by ${blog.user.name}`}
+			{(user.username === blog.user.username) && (
+				<button
+					type="button"
+					onClick={() => confirmDelete()}
+				>
+					Delete
+				</button>
+			)}
 		</>
 	)
 
@@ -41,6 +61,7 @@ function Single({ blog, handleLike }) {
 				{(detailsShown) ? 'Hide' : 'Show'}
 			</button>
 			{(detailsShown) && blogDetails(blog)}
+
 		</div>
 	)
 }

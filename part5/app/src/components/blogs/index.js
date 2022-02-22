@@ -4,7 +4,7 @@ import New from './New'
 import Single from './Single'
 import Toggleable from '../Toggleable'
 
-function Blogs({ addNotification }) {
+function Blogs({ addNotification, user }) {
 	const [blogs, setBlogs] = useState([])
 
 	useEffect(() => {
@@ -36,6 +36,18 @@ function Blogs({ addNotification }) {
 		setBlogs([...newBlogs, likedBlog])
 	}
 
+	const handleDelete = async (blog) => {
+		try {
+			await blogService.remove(blog.id)
+			const newBlogs = blogs.filter((b) => b.id !== blog.id)
+			setBlogs(newBlogs)
+			addNotification('succes', `Succesfully deleted ${blog.title}`)
+		} catch (e) {
+			console.error(e)
+			addNotification('error', `Something went wrong deleting ${blog.title}`)
+		}
+	}
+
 	const sortByLike = () => blogs.sort(
 		(a, b) => a.likes < b.likes,
 	)
@@ -52,6 +64,8 @@ function Blogs({ addNotification }) {
 					key={b.id}
 					blog={b}
 					handleLike={handleLike}
+					handleDelete={handleDelete}
+					user={user}
 				/>
 			))}
 		</div>
