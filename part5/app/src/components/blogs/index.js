@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import blogService from '../../services/blogs'
 import New from './New'
@@ -7,6 +7,8 @@ import Toggleable from '../Toggleable'
 
 function Blogs({ addNotification, user }) {
 	const [blogs, setBlogs] = useState([])
+
+	const blogFormRef = useRef()
 
 	useEffect(() => {
 		const fetch = async () => {
@@ -25,6 +27,8 @@ function Blogs({ addNotification, user }) {
 			const newBlog = await blogService.create(blog)
 			setBlogs([...blogs, newBlog])
 			addNotification('succes', `New Blog: ${newBlog.title} by ${newBlog.author}`)
+			console.log(blogFormRef.current)
+			blogFormRef.current.toggleVisibility()
 		} catch (e) {
 			console.log('Something went wrong adding a blog', e)
 			addNotification('error', e.message)
@@ -55,7 +59,10 @@ function Blogs({ addNotification, user }) {
 
 	return (
 		<div>
-			<Toggleable buttonLabel="Create new">
+			<Toggleable
+				buttonLabel="Create new"
+				ref={blogFormRef}
+			>
 				<h2>Create a new blog</h2>
 				<New handleNewBlog={handleNewBlog} />
 			</Toggleable>
