@@ -13,7 +13,7 @@ const getAll = () => {
 
 const setToken = (newToken) => {
 	if (newToken) {
-		config.headers.Authorization = `Bearer ${newToken}`
+		config.headers.Authorization = `bearer ${newToken}`
 	} else {
 		config.headers.Authorization = null
 	}
@@ -26,10 +26,18 @@ const create = async (blog) => {
 	return res.data
 }
 
+const like = async (id) => {
+	const res = await axios
+		.put(`${baseUrl}/like/${id}`, null, config)
+
+	return res.data
+}
+
 const BlogService = {
 	getAll,
 	setToken,
 	create,
+	like,
 }
 
 export default BlogService

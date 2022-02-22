@@ -1,10 +1,10 @@
 const router = require('express').Router()
 
 const Blog = require('../models/blog')
+const { userExtractor } = require('../utils/middleware')
 
 router.get('/', async (req, res) => {
 	const notes = await Blog
-		.find({})
 		.find({}).populate('user', { username: 1, name: 1 })
 
 	res.json(notes)
@@ -54,6 +54,22 @@ router.put('/:id', async (req, res) => {
 		)
 
 	res.json(updatedBlog)
+})
+
+router.put('/like/:id', userExtractor, async (req, res) => {
+	if (!req.user) {
+		return res.status(401).json({ error: 'token missing or invalid' })
+	}
+
+	const { id } = req.params
+
+	const blog = await Blog.findByIdAndUpdate(
+		id,
+		{ $inc: { likes: 1 } },
+		{ new: true },
+	).populate('user', { username: 1, name: 1 })
+
+	res.status(201).json(blog)
 })
 
 module.exports = router

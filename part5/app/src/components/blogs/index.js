@@ -31,8 +31,14 @@ function Blogs({ addNotification }) {
 	}
 
 	const handleLike = async (blog) => {
-		console.log(blog)
+		const likedBlog = await blogService.like(blog.id)
+		const newBlogs = blogs.filter((b) => b.id !== likedBlog.id)
+		setBlogs([...newBlogs, likedBlog])
 	}
+
+	const sortByLike = () => blogs.sort(
+		(a, b) => a.likes < b.likes,
+	)
 
 	return (
 		<div>
@@ -41,7 +47,7 @@ function Blogs({ addNotification }) {
 				<New handleNewBlog={handleNewBlog} />
 			</Toggleable>
 			<br />
-			{blogs.map((b) => (
+			{sortByLike().map((b) => (
 				<Single
 					key={b.id}
 					blog={b}
