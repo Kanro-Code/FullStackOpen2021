@@ -27,7 +27,7 @@ function New({ handleNewBlog }) {
 			/>
 			<br />
 
-			Title:
+			Author:
 			<input
 				type="text"
 				value={author}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import blogService from '../../services/blogs'
 import New from './New'
 import Single from './Single'
+import Toggleable from '../Toggleable'
 
 function Blogs({ addNotification }) {
 	const [blogs, setBlogs] = useState([])
@@ -31,7 +32,11 @@ function Blogs({ addNotification }) {
 
 	return (
 		<div>
-			<New handleNewBlog={handleNewBlog} />
+			<Toggleable buttonLabel="Create new">
+				<h2>Create a new blog</h2>
+				<New handleNewBlog={handleNewBlog} />
+			</Toggleable>
+			<br />
 			{blogs.map((b) => (
 				<Single key={b.id} blog={b} />
 			))}
