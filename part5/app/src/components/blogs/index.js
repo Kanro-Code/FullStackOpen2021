@@ -30,6 +30,10 @@ function Blogs({ addNotification }) {
 		}
 	}
 
+	const handleLike = async (blog) => {
+		console.log(blog)
+	}
+
 	return (
 		<div>
 			<Toggleable buttonLabel="Create new">
@@ -38,7 +42,11 @@ function Blogs({ addNotification }) {
 			</Toggleable>
 			<br />
 			{blogs.map((b) => (
-				<Single key={b.id} blog={b} />
+				<Single
+					key={b.id}
+					blog={b}
+					handleLike={handleLike}
+				/>
 			))}
 		</div>
 	)
