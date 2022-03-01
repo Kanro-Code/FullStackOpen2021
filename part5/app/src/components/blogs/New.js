@@ -24,6 +24,7 @@ function New({ handleNewBlog }) {
 				type="text"
 				value={title}
 				onChange={({ target }) => setTitle(target.value)}
+				placeholder="Title"
 			/>
 			<br />
 
@@ -32,6 +33,7 @@ function New({ handleNewBlog }) {
 				type="text"
 				value={author}
 				onChange={({ target }) => setAuthor(target.value)}
+				placeholder="Author"
 			/>
 			<br />
 
@@ -40,6 +42,7 @@ function New({ handleNewBlog }) {
 				type="text"
 				value={url}
 				onChange={({ target }) => setUrl(target.value)}
+				placeholder="Url"
 			/>
 			<br />
 			<button type="submit">

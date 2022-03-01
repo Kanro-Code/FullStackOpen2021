@@ -58,6 +58,7 @@ function Single({
 			<button
 				type="button"
 				onClick={handleView}
+				className="showDetails"
 			>
 				{(detailsShown) ? 'Hide' : 'Show'}
 			</button>

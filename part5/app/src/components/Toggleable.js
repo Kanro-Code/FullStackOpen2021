@@ -25,7 +25,7 @@ const Toggleable = forwardRef((props, ref) => {
 					{buttonLabel || 'Show'}
 				</button>
 			</div>
-			<div style={shownWhenVisible}>
+			<div style={shownWhenVisible} className="toggleableContent">
 				{children}
 				<button
 					type="button"
