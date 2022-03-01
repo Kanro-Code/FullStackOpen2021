@@ -9,7 +9,8 @@
     "start-backend-dev": "cross-env NODE_ENV=development nodemon index.js",
     "dev": "concurrently \"npm run start-backend-dev\" \"npm run start-app-dev\"",
     "lint": "eslint .",
-    "test": "cross-env NODE_ENV=test jest --verbose --runInBand --forceExit"
+    "test": "cross-env NODE_ENV=test jest --verbose --runInBand --forceExit",
+		"start:test": "cross-env NODE_ENV=test node index.js"
   },
   "author": "",
   "license": "ISC",
